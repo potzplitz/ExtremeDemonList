@@ -20,8 +20,7 @@ public class Main {
 		ManageFiles manager = new ManageFiles();
 		manager.compareArrays();
 
-		DownloadLevels download = new DownloadLevels();
-		download.download();
+		
 		
 		
 	}
