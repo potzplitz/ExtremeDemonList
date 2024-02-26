@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import gui.MainGUI;
 import gui.MissingLevels;
 
 public class ManageFiles {
@@ -36,6 +37,9 @@ public class ManageFiles {
 		
 		if(missing > 0) {
 			gui.show(missinglevels, missing);
+		} else {
+			MainGUI gui = new MainGUI();
+			gui.build();
 		}
 		
 	}

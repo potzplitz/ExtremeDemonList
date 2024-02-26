@@ -30,7 +30,7 @@ public class FetchData {
 	                }
 	            }
 	        }
-	}
+		}
 	
 	public ArrayList<String> allLevels() {
 		return levels;

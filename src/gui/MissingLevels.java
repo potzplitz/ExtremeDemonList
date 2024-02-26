@@ -72,8 +72,9 @@ public class MissingLevels {
         no.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// haupt gui aufrufen
-				
+				main.dispose();
+				MainGUI gui = new MainGUI();
+				gui.build();
 			}
         });
         

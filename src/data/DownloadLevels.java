@@ -12,6 +12,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import gui.MainGUI;
+
 public class DownloadLevels {
 	
 	private ManageFiles data = new ManageFiles();
@@ -81,7 +83,6 @@ public class DownloadLevels {
         	                
         	            }
         	        } catch (IOException e) {
-        	            // Handle exceptions
         	            e.printStackTrace();
         	        }
         			area.append(" >> ERFOLGREICH \n");
@@ -89,7 +90,8 @@ public class DownloadLevels {
             	JOptionPane.showMessageDialog(null, "Alle " + data.missingLevels().size() + " Level wurden erfolgreich heruntergeladen.", "Download abgeschlossen", JOptionPane.INFORMATION_MESSAGE);
             	main.dispose();
             	
-            	System.out.println("main gui starten IN DOWNLOADLEVELS NICHT VERGESSEN HIER EINFÜGEN");
+            	MainGUI gui = new MainGUI();
+    			gui.build();
             	
             }
             

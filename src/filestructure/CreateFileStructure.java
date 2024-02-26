@@ -9,7 +9,8 @@ public class CreateFileStructure {
 		File file = new File("C:\\ExtremeDemonList\\levels");
 		
 		if(!file.isDirectory()) {
-			file.mkdir();
+			System.out.println("nein");
+			file.mkdirs();
 		}
 		
 	}
