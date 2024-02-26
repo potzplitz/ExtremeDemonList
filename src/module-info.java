@@ -1,9 +1,9 @@
-/**
- * 
- */
-/**
- * 
- */
-module ExtremeDemonList {
-	requires java.desktop;
-}
+	/**
+	 * 
+	 */
+	/**
+	 * 
+	 */
+	module ExtremeDemonList {
+		requires java.desktop;
+	}
