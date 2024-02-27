@@ -15,9 +15,15 @@ public class ManageFiles {
 	private int missing = 0;
 	
 	
+	public static ArrayList<String> getMissinglevels() {
+		return missinglevels;
+	}
+
 	private void feedMissingLevelsArray(String levelname) { // fehlende level werden missinglevels hinzugefügt
 		missinglevels.add(levelname);
 	}
+	
+	
 	
 	
 	public void compareArrays() throws IOException { // downloadedlevels und onlinelevels werden verglichen und die fehlenden level in missinglevels gepackt

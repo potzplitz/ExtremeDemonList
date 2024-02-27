@@ -16,9 +16,6 @@ import gui.MainGUI;
 
 public class DownloadLevels {
 	
-	private ManageFiles data = new ManageFiles();
-	
-	
 	public void download() throws IOException {
 		
 		
@@ -28,7 +25,7 @@ public class DownloadLevels {
         main.setResizable(false);
         main.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
-        JLabel info = new JLabel("Es werden " + data.missingLevels().size() + " Level heruntergeladen.");
+        JLabel info = new JLabel("Es werden " + ManageFiles.getMissinglevels().size() + " Level heruntergeladen.");
         info.setBounds(80, 1, 500, 30);
         
         JTextArea area = new JTextArea();
@@ -45,7 +42,7 @@ public class DownloadLevels {
         JProgressBar bar = new JProgressBar();
         bar.setBounds(1, 29, 382, 30);
         bar.setMinimum(0);
-        bar.setMaximum(data.missingLevels().size());
+        bar.setMaximum(ManageFiles.getMissinglevels().size());
         bar.setStringPainted(true);
         
         main.add(info);
@@ -59,20 +56,20 @@ public class DownloadLevels {
             @Override
             public void run() {
             	String fileURL;
-            	for(int i = 0; i < data.missingLevels().size(); i++) {
+            	for(int i = 0; i < ManageFiles.getMissinglevels().size(); i++) {
         			
             		area.setCaretPosition(area.getDocument().getLength());
             		
         			bar.setValue(i + 1);
         			
-        			area.append(i + 1 + "| " + data.missingLevels().get(i) + " wird heruntergeladen. ");
+        			area.append(i + 1 + "| " + ManageFiles.getMissinglevels().get(i) + " wird heruntergeladen. ");
         			
-        			System.out.println("downloading " + data.missingLevels().get(i));
-        			fileURL = "https://raw.githubusercontent.com/All-Rated-Extreme-Demon-List/AREDL/main/data/" + data.missingLevels().get(i) + ".json";
+        			System.out.println("downloading " + ManageFiles.getMissinglevels().get(i));
+        			fileURL = "https://raw.githubusercontent.com/All-Rated-Extreme-Demon-List/AREDL/main/data/" + ManageFiles.getMissinglevels().get(i) + ".json";
         			
         		try (BufferedInputStream in = new BufferedInputStream(new URL(fileURL).openStream());
         				
-        	             FileOutputStream fileOutputStream = new FileOutputStream("C:\\ExtremeDemonList\\levels\\" + data.missingLevels().get(i) + ".json")) {
+        	             FileOutputStream fileOutputStream = new FileOutputStream("C:\\ExtremeDemonList\\levels\\" + ManageFiles.getMissinglevels().get(i) + ".json")) {
         			
         	            byte dataBuffer[] = new byte[1024];
         	            int bytesRead;
@@ -87,11 +84,16 @@ public class DownloadLevels {
         	        }
         			area.append(" >> ERFOLGREICH \n");
         		}
-            	JOptionPane.showMessageDialog(null, "Alle " + data.missingLevels().size() + " Level wurden erfolgreich heruntergeladen.", "Download abgeschlossen", JOptionPane.INFORMATION_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "Alle " + ManageFiles.getMissinglevels().size() + " Level wurden erfolgreich heruntergeladen.", "Download abgeschlossen", JOptionPane.INFORMATION_MESSAGE);
             	main.dispose();
             	
             	MainGUI gui = new MainGUI();
-    			gui.build();
+    			try {
+					gui.build();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             	
             }
             
