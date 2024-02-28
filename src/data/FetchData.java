@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class FetchData {
 	
-	private ArrayList<String> levels = new ArrayList<String>();
+	private static ArrayList<String> levels = new ArrayList<String>();
 	
 	public void getGithubString() throws IOException {
 		 String link = "https://raw.githubusercontent.com/All-Rated-Extreme-Demon-List/AREDL/main/data/_list.json";

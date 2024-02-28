@@ -26,6 +26,7 @@ public class GuiData {
 
 	public void IndexLevelName() throws IOException {
 		
+		FetchData data = new FetchData();
 		
 		File filelength = new File("C:\\ExtremeDemonList\\levels");
 		File[] filelengthindex = filelength.listFiles();
@@ -37,7 +38,7 @@ public class GuiData {
 		System.out.println(filelengthindex.length);
 		
 		for(int i = 0; i < filelengthindex.length; i++) { 
-			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + filelengthindex[i].getName()), StandardCharsets.UTF_8);
+			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
 			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
 			
 			JSONObject obj = new JSONObject(jsonstring);

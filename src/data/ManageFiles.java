@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import gui.MainGUI;
+
 import gui.MissingLevels;
 
 public class ManageFiles {
@@ -14,7 +15,6 @@ public class ManageFiles {
 	private static ArrayList<String> missinglevels = new ArrayList<String>(); // fehlende noch zu herunterladende level
 	private int missing = 0;
 	
-	
 	public static ArrayList<String> getMissinglevels() {
 		return missinglevels;
 	}
@@ -22,9 +22,6 @@ public class ManageFiles {
 	private void feedMissingLevelsArray(String levelname) { // fehlende level werden missinglevels hinzugefügt
 		missinglevels.add(levelname);
 	}
-	
-	
-	
 	
 	public void compareArrays() throws IOException { // downloadedlevels und onlinelevels werden verglichen und die fehlenden level in missinglevels gepackt
 
@@ -46,12 +43,10 @@ public class ManageFiles {
 		} else {
 			MainGUI gui = new MainGUI();
 			gui.build();
-		}
-		
+		}	
 	}
 	
 	public ArrayList<String> missingLevels() { // missinglevels wird zurückgegeben
 		return missinglevels;
 	}
-
 }
