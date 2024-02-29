@@ -51,6 +51,8 @@ public class MissingLevels {
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setBounds(1, 60, 383, 201);
         
+        
+        
         for(int i = 0; i < missinglevels.size(); i++) {
         	area.append(missinglevels.get(i) + "\n");
         }

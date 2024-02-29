@@ -14,6 +14,14 @@ import org.json.JSONObject;
 public class GuiData {
 	
 	private ArrayList<String> localLevels = new ArrayList<String>();
+	private ArrayList<String> completed = new ArrayList<String>();
+	private ArrayList<String> id = new ArrayList<String>();
+	
+
+	public void setId(ArrayList<String> id) {
+		this.id = id;
+	}
+
 	private int localLength;
 	
 	public int getLocalLength() {
@@ -23,6 +31,16 @@ public class GuiData {
 	public ArrayList<String> getLocalLevels() {
 		return localLevels;
 	}
+	
+	public ArrayList<String> getCompleted() {
+		return completed;
+	}
+	
+	public ArrayList<String> getId() {
+		return id;
+	}
+	
+	
 
 	public void IndexLevelName() throws IOException {
 		
@@ -38,6 +56,9 @@ public class GuiData {
 		System.out.println(filelengthindex.length);
 		
 		for(int i = 0; i < filelengthindex.length; i++) { 
+			
+			
+			
 			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
 			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
 			
@@ -45,7 +66,42 @@ public class GuiData {
 			
 			localLevels.add(obj.getString("name"));
 			
+
+			
 		}
+		
+		
+		
+	}
+	
+	public void IndexLevelID() throws IOException {
+		
+FetchData data = new FetchData();
+		
+		File filelength = new File("C:\\ExtremeDemonList\\levels");
+		File[] filelengthindex = filelength.listFiles();
+		
+		String jsonstring;
+		
+		localLength = filelengthindex.length;
+		
+		System.out.println(filelengthindex.length);
+		
+		for(int i = 0; i < filelengthindex.length; i++) { 
+			
+			
+			
+			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
+			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
+			
+			JSONObject obj = new JSONObject(jsonstring);
+			
+			id.add(obj.getInt("id") + "");
+			
+
+			
+		}
+		
 	}
 
 }

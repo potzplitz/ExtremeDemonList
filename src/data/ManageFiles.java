@@ -27,6 +27,8 @@ public class ManageFiles {
 
 		fetch.getGithubString();
 		
+		
+		
 		for(int i = 0; i < fetch.allLevels().size(); i++) {
 			
 			File file = new File("C:\\ExtremeDemonList\\levels\\" + fetch.allLevels().get(i) + ".json");
@@ -39,14 +41,11 @@ public class ManageFiles {
 		}
 		
 		if(missing > 0) {
+			
 			gui.show(missinglevels, missing);
 		} else {
 			MainGUI gui = new MainGUI();
 			gui.build();
 		}	
-	}
-	
-	public ArrayList<String> missingLevels() { // missinglevels wird zurückgegeben
-		return missinglevels;
 	}
 }

@@ -9,8 +9,12 @@ import java.util.ArrayList;
 public class FetchData {
 	
 	private static ArrayList<String> levels = new ArrayList<String>();
+	private static int lock = 0;
 	
 	public void getGithubString() throws IOException {
+		
+		if(lock == 0) {
+			lock = 1;
 		 String link = "https://raw.githubusercontent.com/All-Rated-Extreme-Demon-List/AREDL/main/data/_list.json";
 	        
 
@@ -31,6 +35,7 @@ public class FetchData {
 	            }
 	        }
 		}
+	}
 	
 	public ArrayList<String> allLevels() {
 		return levels;
