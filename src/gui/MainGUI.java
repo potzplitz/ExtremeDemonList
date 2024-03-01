@@ -72,7 +72,7 @@ public class MainGUI {
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		level.setBounds(10, 10, 200, 30);
-		level.setFont(level.getFont().deriveFont(20f));
+		level.setFont(level.getFont().deriveFont(15f));
 		
 		filtercompleted.setBounds(720, 15, 200, 30);
 		
