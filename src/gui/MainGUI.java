@@ -47,6 +47,11 @@ public class MainGUI {
 	public JTextField search = new JTextField();
 	public JLabel levelname;
 	public JLabel level = new JLabel("Liste");
+	public JLabel creator = new JLabel("Creator");
+	public JLabel separator = new JLabel("_______________________________________________________________________________________________________________");
+	public JLabel verifier = new JLabel("Verifier");
+	public JPanel recordspanel = new JPanel();
+	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschaft filtern");
 	public Button copyid = new Button("Level ID kopieren");
 	private FetchData fetch = new FetchData();
@@ -58,6 +63,8 @@ public class MainGUI {
 		GuiData data = new GuiData();
 		data.IndexLevelName();
 		data.IndexLevelID();
+		data.IndexVerifiers();
+		data.IndexCreators();
 			
 		main.setSize(900, 700);
 		main.setLayout(null);
@@ -81,7 +88,11 @@ public class MainGUI {
 		levelpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		levelpanel.setLayout(new GridLayout(data.getLocalLevels().size(), 1));
 		
-		copyid.setBounds(10, 50, 100, 30);
+		recordspanel.setBackground(Color.LIGHT_GRAY);
+		recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		recordspanel.setLayout(new GridLayout(data.getLocalLevels().size(), 1));
+		
+		copyid.setBounds(10, 50, 164, 30);
 		 
 	     scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	     scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -91,6 +102,12 @@ public class MainGUI {
 	     
 	     elements.infopanel().setBounds(700, 61, 184, 600);
 	     elements.infopanel().setVisible(false);
+	     
+	     separator.setBounds(0, 70, 300, 30);
+	     
+	     creator.setBounds(10, 90, 164, 30);
+	     
+	     verifier.setBounds(10, 110, 164, 30);
 	     
 	     search.setBounds(1, 1, 700, 60);
 	        
@@ -171,6 +188,8 @@ public class MainGUI {
 							public void mouseClicked(MouseEvent e) {	
 
 								level.setText(data.getLocalLevels().get(index));
+								verifier.setText("Verifier: " + data.getVerifier().get(index));
+								creator.setText("Creator: " + data.getCreator().get(index));
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
 								copyid.addActionListener(new ActionListener() {
@@ -265,6 +284,9 @@ public class MainGUI {
 	    
 	    elements.infopanel().add(copyid);
 	    elements.infopanel().add(level, SwingConstants.CENTER);
+	    elements.infopanel().add(separator);
+	    elements.infopanel().add(creator);
+	    elements.infopanel().add(verifier);
 	        
 	       
 	    main.add(search);
