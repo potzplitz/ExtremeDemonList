@@ -25,17 +25,20 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: actions/checkout@v3
 
       - name: Build & test
-        run: |
-          echo "done!"
+        run: echo "done!"
 
-      - uses: marvinpinto/action-automatic-releases@latest
+      - name: Create Release
+        uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           files: |
             LICENSE.txt
             *.jar
+          # Setzen Sie einen statischen Tag oder generieren Sie einen dynamischen Tag
+          automatic_release_tag: "release-$(date +'%Y%m%d%H%M%S')"
