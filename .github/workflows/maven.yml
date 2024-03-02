@@ -22,7 +22,7 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-      
+
   create_release:
     needs: build
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
       - name: Create Release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.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 }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           release_name: Release ${{ steps.tag.outputs.tag }}
