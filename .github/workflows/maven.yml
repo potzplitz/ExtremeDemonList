@@ -21,7 +21,7 @@ jobs:
       - name: Erstellen eines Releases
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ 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 }}
+          GITHUB_TOKEN: ${{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}}
         with:
           # Verwendet den Tag-Namen, der den Trigger ausgelöst hat, als Tag-Name für das Release
           tag_name: ${{ github.ref }}
