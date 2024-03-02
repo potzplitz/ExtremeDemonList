@@ -26,6 +26,8 @@ jobs:
   create_release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # This line gives the token permission to create releases
     steps:
       - uses: actions/checkout@v3
       - name: Generate tag
