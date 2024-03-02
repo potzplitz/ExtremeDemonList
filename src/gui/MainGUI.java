@@ -25,6 +25,7 @@ import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -54,6 +55,10 @@ public class MainGUI {
 	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschaft filtern");
 	public Button copyid = new Button("Level ID kopieren");
+	
+	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public JComboBox show = new JComboBox(showing);
 	private FetchData fetch = new FetchData();
 	private Elements elements = new Elements();
 	
@@ -92,6 +97,8 @@ public class MainGUI {
 		recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		recordspanel.setLayout(new GridLayout(data.getLocalLevels().size(), 1));
 		
+		
+		
 		copyid.setBounds(10, 50, 164, 30);
 		 
 	     scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -109,7 +116,9 @@ public class MainGUI {
 	     
 	     verifier.setBounds(10, 110, 164, 30);
 	     
-	     search.setBounds(1, 1, 700, 60);
+	     search.setBounds(1, 1, 500, 60);
+	     
+	     show.setBounds(500, 1, 200, 60);
 	        
 	        Thread thread = new Thread(new Runnable() {
 				@Override
@@ -221,6 +230,51 @@ public class MainGUI {
 							}        		
 			        	});
 			        	
+			        	JLabel rank = new JLabel("#" + (i + 1));
+			        	rank.setBounds(10, 10, 40, 30);
+			        	rank.setName(i + "");
+			        	
+			        	show.addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								levelpanel.add(contents, 0);
+								if(show.getSelectedIndex() == 1) {
+					        		if(!(Integer.parseInt(rank.getName()) >= 0 && Integer.parseInt(rank.getName()) <= 2)) {
+					        			levelpanel.remove(contents);
+					        			levelpanel.repaint();
+					        			levelpanel.revalidate();
+					        		}
+								} else if(show.getSelectedIndex() == 0) {	
+					        			levelpanel.add(contents, 0);
+					        			levelpanel.repaint();
+					        			levelpanel.revalidate();	
+					        	} else if(show.getSelectedIndex() == 2) {
+					        		if(!(Integer.parseInt(rank.getName()) >= 0 && Integer.parseInt(rank.getName()) <= 49)) {
+					        			levelpanel.remove(contents);
+					        			levelpanel.repaint();
+					        			levelpanel.revalidate();
+					        		}
+					        	} else if(show.getSelectedIndex() == 3) {
+					        		if(!(Integer.parseInt(rank.getName()) >= 0 && Integer.parseInt(rank.getName()) <= 149)) {
+					        			levelpanel.remove(contents);
+					        			levelpanel.repaint();
+					        			levelpanel.revalidate();
+					        		}	
+					        	} else if(show.getSelectedIndex() == 4) {
+					        		if(!(Integer.parseInt(rank.getName()) >= 0 && Integer.parseInt(rank.getName()) <= 199)) {
+				        			levelpanel.remove(contents);
+				        			levelpanel.repaint();
+				        			levelpanel.revalidate();
+				        		}
+				        	}
+								
+							}
+			        		
+			        	});
+			        	
+			        	
+			        	
 			        	levelname = new JLabel();
 			        	levelname.setText(data.getLocalLevels().get(i));
 			        	levelname.setBounds(290, 10, 300, 30);
@@ -262,8 +316,7 @@ public class MainGUI {
 			        	    }
 			        	});
 			        	
-			        	JLabel rank = new JLabel("#" + (i + 1));
-			        	rank.setBounds(10, 10, 40, 30);
+			        	
 			        	
 			        	contents.add(levelname);
 			        	contents.add(rank);
@@ -295,6 +348,7 @@ public class MainGUI {
 		main.add(scroll);
 		main.add(progress);
 		main.add(filtercompleted);
+		main.add(show);
 		main.add(elements.infopanel());
 		main.setVisible(true);
 	}
