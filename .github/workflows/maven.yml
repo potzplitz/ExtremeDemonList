@@ -23,17 +23,27 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-  create_release:
+  release:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Generate tag
-        id: tag
-        run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
-        
-      - name: Release new version to NPM
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x' # Stellen Sie sicher, dass diese Version mit semantic-release kompatibel ist.
+        cache: 'npm'
+
+    - name: Install semantic-release
+      run: npm install -g semantic-release@latest @semantic-release/changelog @semantic-release/git
+
+    - name: Configure Git
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+
+    - name: Run semantic-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx semantic-release
