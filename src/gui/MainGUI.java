@@ -55,7 +55,7 @@ public class MainGUI {
 	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschaft filtern");
 	public Button copyid = new Button("Level ID kopieren");
-	
+	GridLayout gridLayout = new GridLayout(3, 1);
 	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JComboBox show = new JComboBox(showing);
@@ -70,6 +70,8 @@ public class MainGUI {
 		data.IndexLevelID();
 		data.IndexVerifiers();
 		data.IndexCreators();
+		
+		gridLayout.setRows(data.getLocalLevels().size());
 			
 		main.setSize(900, 700);
 		main.setLayout(null);
@@ -91,7 +93,8 @@ public class MainGUI {
 		
 		levelpanel.setBackground(Color.LIGHT_GRAY);
 		levelpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		levelpanel.setLayout(new GridLayout(data.getLocalLevels().size(), 1));
+		levelpanel.setLayout(gridLayout);
+
 		
 		recordspanel.setBackground(Color.LIGHT_GRAY);
 		recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -128,10 +131,6 @@ public class MainGUI {
 						progress.setValue(i + 1);
 						
 						currentLevel.setText(data.getLocalLevels().get(i));
-						
-						
-						
-						
 						
 			        	JPanel contents = new JPanel();
 			        	contents.setName(data.getLocalLevels().get(i));
@@ -242,6 +241,7 @@ public class MainGUI {
 								if(show.getSelectedIndex() == 1) {
 					        		if(!(Integer.parseInt(rank.getName()) >= 0 && Integer.parseInt(rank.getName()) <= 2)) {
 					        			levelpanel.remove(contents);
+					        			
 					        			levelpanel.repaint();
 					        			levelpanel.revalidate();
 					        		}
@@ -267,8 +267,12 @@ public class MainGUI {
 				        			levelpanel.repaint();
 				        			levelpanel.revalidate();
 				        		}
-				        	}
-								
+				        	} 
+								gridLayout.setRows(levelpanel.getComponentCount());
+								gridLayout.setColumns(1);
+								levelpanel.revalidate();
+	        	                scroll.repaint();
+	        	                scroll.revalidate();
 							}
 			        		
 			        	});
@@ -290,7 +294,12 @@ public class MainGUI {
 									levelpanel.add(contents);
 									levelpanel.repaint();
 									levelpanel.revalidate();
-								}			
+								}		
+								gridLayout.setRows(levelpanel.getComponentCount());
+								gridLayout.setColumns(1);
+								levelpanel.revalidate();
+	        	                scroll.repaint();
+	        	                scroll.revalidate();
 							}
 							@Override
 							public void keyPressed(KeyEvent e) {
@@ -307,6 +316,9 @@ public class MainGUI {
 			        	        if (e.getStateChange() == ItemEvent.SELECTED) {
 			        	            if (!contents.getBackground().equals(Color.decode("#cbffbf"))) {
 			        	                levelpanel.remove(contents);
+			        	                gridLayout.setRows(data.getCompleted().size());
+			        	                scroll.repaint();
+			        	                scroll.revalidate();
 			        	            }
 			        	        } else if (e.getStateChange() == ItemEvent.DESELECTED) {
 			        	            levelpanel.add(contents, 0); // Füge das Element am Anfang hinzu

@@ -1,2 +1,2 @@
-1.3
-https://github.com/potzplitz/ExtremeDemonList/releases/download/sdfdf/List.jar
+1.4
+https://github.com/potzplitz/ExtremeDemonList/releases/download/List1.4/List.jar
