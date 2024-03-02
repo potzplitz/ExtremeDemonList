@@ -1,23 +1,17 @@
-name: Java CI mit Maven
+name: Automatisches Release
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17.0.8
-    - name: Build mit Maven
-      run: mvn -B package --file pom.xml
+      - uses: actions/checkout@v2
+      
+      # Weitere Build-Schritte hier...
 
   release:
     needs: build
@@ -25,12 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Erstellen eines Releases
-        id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ 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 }}
+          GITHUB_TOKEN: ${{ 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 }}
         with:
+          # Verwendet den Tag-Namen, der den Trigger ausgelöst hat, als Tag-Name für das Release
           tag_name: ${{ github.ref }}
+          # Erstellt einen Release-Namen, der dem Tag-Namen entspricht
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
