@@ -4,14 +4,14 @@ on:
   push:
     tags:
       - 'v*'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
-      # Weitere Build-Schritte hier...
-
+      # Fügen Sie hier Ihre Build-Schritte ein...
+  
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -20,11 +20,9 @@ jobs:
       - name: Erstellen eines Releases
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{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}}
+          GITHUB_TOKEN: ${{ secrets.project_token }}  # Ersetzen Sie GITHUB_PAT durch den Namen Ihres Secrets
         with:
-          # Verwendet den Tag-Namen, der den Trigger ausgelöst hat, als Tag-Name für das Release
-          tag_name: ${{ github.ref }}
-          # Erstellt einen Release-Namen, der dem Tag-Namen entspricht
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
