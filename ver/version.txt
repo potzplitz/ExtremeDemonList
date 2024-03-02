@@ -1,2 +1,2 @@
-1.4
-https://github.com/potzplitz/ExtremeDemonList/releases/download/List1.4/List.jar
+1.5
+https://github.com/potzplitz/ExtremeDemonList/releases/download/List1.5/List.jar
