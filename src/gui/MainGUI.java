@@ -95,10 +95,11 @@ public class MainGUI {
 		levelpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		levelpanel.setLayout(gridLayout);
 
-		
-		recordspanel.setBackground(Color.LIGHT_GRAY);
 		recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		recordspanel.setLayout(new GridLayout(data.getLocalLevels().size(), 1));
+		recordspanel.setBackground(Color.RED);
+		
+		records.setBounds(0, 200, 100, 30);
 		
 		
 		
@@ -352,6 +353,7 @@ public class MainGUI {
 	    elements.infopanel().add(separator);
 	    elements.infopanel().add(creator);
 	    elements.infopanel().add(verifier);
+	    elements.infopanel().add(records);
 	        
 	       
 	    main.add(search);
