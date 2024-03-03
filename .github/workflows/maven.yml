@@ -42,7 +42,7 @@ jobs:
 
     - name: Baue mit Maven
       run: mvn clean install
-      working-directory: ./builds  # Set the working directory to the "builds" directory
+      working-directory: ./  # Set the working directory to the root of the project
 
     - name: Erstelle Release
       id: create_release
