@@ -16,7 +16,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20240205</version>
+      <version>20140107</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -40,6 +40,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
