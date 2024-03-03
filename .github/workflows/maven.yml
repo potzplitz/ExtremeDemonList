@@ -1,38 +1,39 @@
-name: Build and Release Java Project
+name: Build und Veröffentlichen des Java-Projekts
 
 on:
   push:
     branches:
-      - main  # oder den Namen des Hauptbranchs Ihres Projekts
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout des Codes
+      uses: actions/checkout@v2
 
-    - name: Set up JDK 17
+    - name: Setze JDK 17 ein
       uses: actions/setup-java@v2
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Configure Git User
+    - name: Konfiguriere Git-Benutzer
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
 
-    - name: Create Git Tag
-      run: git tag $(date +'%Y%m%d%H%M%S') -a -m "Generated tag from GitHub Actions"
+    - name: Erstelle Git-Tag
+      run: git tag $(date +'%Y%m%d%H%M%S') -a -m "Generierter Tag von GitHub Actions"
 
-    - name: Push Tags
+    - name: Sende Tags
       run: git push --tags
 
-    - name: Build with Maven
+    - name: Baue mit Maven
       run: mvn clean install
 
-    - name: Create Release
+    - name: Erstelle Release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +43,7 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Upload Artifact to Release
+    - name: Lade Artefakt zur Veröffentlichung hoch
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
