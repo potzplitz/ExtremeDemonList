@@ -76,7 +76,7 @@ public class MainGUI {
 	public JComboBox show = new JComboBox(showing);
 	private FetchData fetch = new FetchData();
 	private Elements elements = new Elements();
-	
+	 
 	public void build() throws IOException {
 
 		GuiData data = new GuiData();
