@@ -23,7 +23,7 @@
     </dependency>
   </dependencies>
   <build>
-    <directory>${project.basedir}/builds</directory>
+    <directory>target</directory>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
