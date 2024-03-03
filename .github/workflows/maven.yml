@@ -25,15 +25,8 @@ jobs:
     - name: Build Java project with Maven
       run: mvn clean package
         
-    - name: Check if JAR files exist
-      run: |
-        if [ ! -d "target" ] || [ -z "$(ls -A target/*.jar)" ]; then
-          echo "No JAR files found in target directory or target directory does not exist."
-          exit 1
-        fi
-
     - name: Create builds directory
       run: mkdir -p builds
       
-    - name: Copy built JAR files
-      run: cp -r target/*.jar builds/
+    - name: Copy all contents of target directory
+      run: cp -r /home/runner/work/ExtremeDemonList/ExtremeDemonList/builds/ExtremeDemonList-0.0.1-SNAPSHOT.jar builds/
