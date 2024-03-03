@@ -63,54 +63,15 @@
             </manifest>
           </archive>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>main.Main</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
         <executions>
           <execution>
-            <id>make-assembly</id>
+            <id>package</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Add maven-resources-plugin to create target directory if not exist -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <id>create-target-directory</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>copy-resources</goal>
+              <goal>jar</goal>
             </goals>
             <configuration>
-              <outputDirectory>builds</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>*</include>
-                  </includes>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
+              <outputDirectory>${project.build.directory}/staging</outputDirectory>
             </configuration>
           </execution>
         </executions>
