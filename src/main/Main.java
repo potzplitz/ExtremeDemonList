@@ -2,7 +2,8 @@ package main;
 
 import java.io.IOException;
 
-import data.DownloadLevels;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import data.FetchData;
 import data.ManageFiles;
 import filestructure.CreateFileStructure;
@@ -10,7 +11,9 @@ import gui.LoadMenu;
 
 public class Main {
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, UnsupportedLookAndFeelException {
+		
+		
 		
 		LoadMenu load = new LoadMenu();
 		load.onLoad();
