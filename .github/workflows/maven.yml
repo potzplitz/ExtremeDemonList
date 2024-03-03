@@ -11,11 +11,6 @@ on:
 permissions:
   contents: write
 
-env:
-  MAJOR: ${{ env.MAJOR }}
-  MINOR: ${{ env.MINOR }}
-  PATCH: ${{ env.PATCH }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
