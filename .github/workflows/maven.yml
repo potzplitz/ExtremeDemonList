@@ -28,7 +28,7 @@ jobs:
       run: git tag $(date +'%Y%m%d%H%M%S') -a -m "Generierter Tag von GitHub Actions"
 
     - name: Sende Tags
-      run: git push --tags --quiet
+      run: git push --tags --quiet -u ${{ secrets.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 }}
 
     - name: Baue mit Maven
       run: mvn clean install
