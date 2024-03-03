@@ -28,5 +28,5 @@ jobs:
     - name: Create builds directory
       run: mkdir -p builds
       
-    - name: Copy built JAR files
-      run: cp -r target/*.jar builds/
+    - name: Copy all contents of target directory
+      run: cp -r target/. builds/
