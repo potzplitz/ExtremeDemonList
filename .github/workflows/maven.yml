@@ -35,7 +35,7 @@ jobs:
         name: packaged-jar
         path: staging
     - name: Extract artifact
-      run: unzip staging/*.jar -d extracted-artifact
+      run: unzip staging/packaged-jar.zip -d extracted-artifact
 
     # Rename the directory to include the run ID
     - name: Get current timestamp
