@@ -44,15 +44,12 @@ jobs:
       run: mvn clean install
       working-directory: ./  # Set the working directory to the root of the project
 
-    - name: List contents of builds directory
-      run: ls -l ./builds
-
     - name: Lade Artefakt zur Veröffentlichung hoch
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}  # Provide the upload URL obtained from create-release action
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./target/ExtremeDemonList-${{ steps.version.outputs.VERSION }}-SNAPSHOT.jar  # Update the path to the generated JAR file
         asset_name: ExtremeDemonList-${{ steps.version.outputs.VERSION }}-SNAPSHOT.jar
         asset_content_type: application/java-archive
