@@ -34,7 +34,16 @@ jobs:
       with:
         name: packaged-jar
         path: staging
-    - uses: actions/setup-java@v3
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        java-version: '17'
-        distribution: 'temurin'
+        tag_name: v1.0.0
+        release_name: Release 1.0.0
+        body: |
+          Release von Version 1.0.0
+          Das Artefakt kann unter folgender URL heruntergeladen werden: ${{ steps.download-artifact.outputs.download-url }}
+        draft: false
+        prerelease: false
