@@ -25,6 +25,13 @@ jobs:
     - name: Build Java project with Maven
       run: mvn clean package
         
+    - name: Check if JAR files exist
+      run: |
+        if ! [ -d "target" ] || ! [ "$(ls -A target/*.jar 2>/dev/null)" ]; then
+          echo "No JAR files found in target directory or target directory does not exist."
+          exit 1
+        fi
+
     - name: Create builds directory
       run: mkdir -p builds
       
