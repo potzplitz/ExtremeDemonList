@@ -37,10 +37,3 @@ jobs:
       
     - name: Copy built JAR files
       run: cp -r target/*.jar builds/
-
-    - name: Update version.txt
-      run: |
-        sed -i 's/old_text/new_text/g' ver/version.txt
-        git add ver/version.txt builds/*.jar
-        git commit -m "Updated version and built JAR files"
-        git push
