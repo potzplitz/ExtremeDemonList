@@ -25,11 +25,6 @@ jobs:
     - name: Build Java project with Maven
       run: mvn clean package
         
-    - name: Check if JAR files exist
-      run: |
-        
-        fi
-
     - name: Create builds directory
       run: mkdir -p builds
       
