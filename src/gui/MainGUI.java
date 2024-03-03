@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -95,11 +96,7 @@ public class MainGUI {
 		levelpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		levelpanel.setLayout(gridLayout);
 
-		recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		recordspanel.setLayout(new GridLayout(data.getLocalLevels().size(), 1));
-		recordspanel.setBackground(Color.RED);
 		
-		records.setBounds(0, 200, 100, 30);
 		
 		
 		
@@ -201,6 +198,48 @@ public class MainGUI {
 								creator.setText("Creator: " + data.getCreator().get(index));
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
+								FetchData fetchData = new FetchData();
+								
+								recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+								try {
+									recordspanel.setLayout(new GridLayout(GuiData.allVictors(fetchData.allLevels().get(index)).size(), 1));
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								recordspanel.setBackground(Color.GRAY);
+								
+								records.setBounds(0, 302, 185, 300);
+								
+								recordspanel.removeAll();
+								
+								try {
+								     // Instanz der FetchData-Klasse erstellen
+								    ArrayList<String> victors = GuiData.allVictors(fetchData.allLevels().get(index)); // Methode allVictors aufrufen
+								    
+								    recordspanel.setLayout(new GridLayout(victors.size(), 1));
+
+								    for(String victor : victors) {
+								        System.out.println(victor);
+								        JPanel contents = new JPanel();
+								        contents.setPreferredSize(new Dimension(165, 50));
+								        contents.setLayout(null);
+								        contents.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+
+								        JLabel name = new JLabel(victor);
+								        name.setBounds(10, 10, 100, 30);
+								        contents.add(name);
+
+								        recordspanel.add(contents);
+								    }
+								} catch (IOException e1) {
+								    e1.printStackTrace();
+								}
+
+								recordspanel.revalidate();
+
+
+								
 								copyid.addActionListener(new ActionListener() {
 
 									@Override
@@ -213,6 +252,9 @@ public class MainGUI {
 									}
 					        		
 					        	});
+								
+								
+								
 							}
 							@Override
 							public void mousePressed(MouseEvent e) {						
@@ -317,7 +359,12 @@ public class MainGUI {
 			        	        if (e.getStateChange() == ItemEvent.SELECTED) {
 			        	            if (!contents.getBackground().equals(Color.decode("#cbffbf"))) {
 			        	                levelpanel.remove(contents);
-			        	                gridLayout.setRows(data.getCompleted().size());
+			        	                try {
+											gridLayout.setRows(data.allVictors(data.getLocalLevels().get(index)).size());
+										} catch (IOException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
 			        	                scroll.repaint();
 			        	                scroll.revalidate();
 			        	            }
@@ -338,6 +385,9 @@ public class MainGUI {
 			        	levelpanel.add(contents);
 			        	
 			        }
+					
+					
+					
 					scroll.setVisible(true);
 					elements.infopanel().setVisible(true);
 					progress.setVisible(false);

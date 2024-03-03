@@ -37,10 +37,6 @@ public class GuiData {
 		return localLevels;
 	}
 	
-	public ArrayList<String> getCompleted() {
-		return completed;
-	}
-	
 	public ArrayList<String> getId() {
 		return id;
 	}
@@ -180,5 +176,24 @@ public class GuiData {
 		
 		
 	}
+	
+	public static ArrayList<String> allVictors(String levelname) throws IOException {
+        ArrayList<String> completed = new ArrayList<>();
 
+        // JSON-Datei einlesen
+        String jsonContent = new String(Files.readAllBytes(Paths.get("C:\\ExtremeDemonList\\levels\\" + levelname + ".json")));
+        JSONObject jsonObject = new JSONObject(jsonContent);
+
+        // Victors extrahieren
+        JSONArray recordsArray = jsonObject.getJSONArray("records");
+        for (int i = 0; i < recordsArray.length(); i++) {
+            JSONObject record = recordsArray.getJSONObject(i);
+            int percent = record.getInt("percent");
+            if (percent == 100) {
+                completed.add(record.getString("user"));
+            }
+        }
+
+        return completed;
+    }
 }
