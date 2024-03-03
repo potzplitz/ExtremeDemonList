@@ -33,4 +33,24 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: packaged-jar
-        path: staging
+        path: staging#
+
+  create_release:
+    needs: build_test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # This line gives the token permission to create releases
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate tag
+        id: tag
+        run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
+          draft: false
+          prerelease: false
