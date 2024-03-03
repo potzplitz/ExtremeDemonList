@@ -18,6 +18,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Configure Git User
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Create Git Tag
+      run: git tag $(date +'%Y%m%d%H%M%S') -a -m "Generated tag from GitHub Actions"
+
+    - name: Push Tags
+      run: git push --tags
+
     - name: Build with Maven
       run: mvn clean install
 
@@ -26,8 +37,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.RELEASE_VERSION }}  # Stelle sicher, dass diese Umgebungsvariable deiner aktuellen Version entspricht
-        release_name: Release ${{ env.RELEASE_VERSION }}
+        tag_name: $(git describe --tags --abbrev=0)
+        release_name: Release $(git describe --tags --abbrev=0)
         draft: false
         prerelease: false
 
