@@ -66,10 +66,10 @@ public class MainGUI {
 	public JLabel idshow = new JLabel("ID");
 	public JLabel qualify = new JLabel("Qualifikation");
 	public JPanel recordspanel = new JPanel();
-	public JLabel ytthumbnail = new JLabel();
 	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschaft filtern");
 	public Button copyid = new Button("Level ID kopieren");
+	public Button showinfos = new Button("Verifikationsinfos anzeigen");
 	GridLayout gridLayout = new GridLayout(3, 1);
 	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -121,6 +121,8 @@ public class MainGUI {
 		qualify.setBounds(10, 170, 164, 30);
 		
 		victor.setBounds(1, 276, 164, 30);
+		
+		showinfos.setBounds(12, 227, 160, 30);
 		 
 	     scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	     scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -143,7 +145,6 @@ public class MainGUI {
 	     
 	     show.setBounds(500, 1, 200, 60);
 	     
-	     ytthumbnail.setBounds(0, 200, 184, 85);
 
 	     recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	     
@@ -222,50 +223,19 @@ public class MainGUI {
 							@Override
 							public void mouseClicked(MouseEvent e) {	
 								
+								showinfos.addActionListener(new ActionListener() {
+								    @Override
+								    public void actionPerformed(ActionEvent e) {
+								        String url = data.getYoutubeLink().get(index);
+								        VerifyInfo ver = VerifyInfo.getInstance();
+								        ver.showInfo(url);
+								    }
+								});
 								
-								String url = data.getYoutubeLink().get(index);
 								
 								
-								 if (url != null && url.contains("v=")) {
-							            int startIndex = url.indexOf("v=") + 2;
-							            int endIndex = url.indexOf('&', startIndex);
-							            if (endIndex == -1) {
-							                endIndex = url.length();
-							            }
-							            String videoId = url.substring(startIndex, endIndex);
-							            
-							            String videoThumb = "https://img.youtube.com/vi/" + videoId +"/0.jpg";
-										
-										System.out.println(videoThumb);
-										
-										
-										int labelWidth = ytthumbnail.getWidth();
-										int labelHeight = ytthumbnail.getHeight();
-										
-										URL imageget;
-										try {
-											imageget = new URL(videoThumb);
-											BufferedImage originalImage = ImageIO.read(imageget);
-
-											// Das Bild skalieren, um in das JLabel zu passen
-											Image scaledImage = originalImage.getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
-
-											// Ein ImageIcon erstellen und dem JLabel zuweisen
-											ytthumbnail.setIcon(new ImageIcon(scaledImage));
-										} catch (IOException e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
-											
-										
-										
-							        }
 								
 
-								
-
-								
-								
 								level.setText(data.getLocalLevels().get(index));
 								verifier.setText("Verifier: " + data.getVerifier().get(index));
 								creator.setText("Creator: " + data.getCreator().get(index));
@@ -482,7 +452,8 @@ public class MainGUI {
 	    elements.infopanel().add(idshow);
 	    elements.infopanel().add(qualify);
 	    elements.infopanel().add(victor);
-	    elements.infopanel().add(ytthumbnail);
+	  //  elements.infopanel().add(ytthumbnail);
+	    elements.infopanel().add(showinfos);
 	        
 	       
 	    main.add(search);
