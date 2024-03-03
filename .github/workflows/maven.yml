@@ -31,12 +31,12 @@ jobs:
     steps:
     - name: Download artifact
       run: |
-        URL="https://github.com/potzplitz/ExtremeDemonList/actions/runs/${{ github.run_id }}/artifacts/${{ job.outputs.artifact_id }}"
-        echo "::set-output name=download_url::$URL"
+        ARTIFACT_URL=$(curl -s "https://github.com/potzplitz/ExtremeDemonList/actions/runs/${{ github.run_id }}/artifacts" | grep -oP '(?<=href=")[^"]+(?=")' | grep -m 1 -oP '\d+$')
+        echo "::set-output name=artifact_url::$ARTIFACT_URL"
       id: get_artifact_url
     - name: Download and extract artifact
       run: |
-        wget -O artifact.zip ${{ steps.get_artifact_url.outputs.download_url }}
+        wget -O artifact.zip "https://github.com/potzplitz/ExtremeDemonList/actions/runs/${{ github.run_id }}/artifacts/download/${{ steps.get_artifact_url.outputs.artifact_url }}"
         unzip artifact.zip -d extracted-artifact
 
     # Rename the directory to include the run ID
