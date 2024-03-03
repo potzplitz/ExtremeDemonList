@@ -45,9 +45,11 @@ jobs:
     - name: List files in staging directory
       run: ls -R staging
 
-    - name: Extract Artifact
-      run: |
-        mv staging/*.jar extracted-jar/
+    - name: Create extracted-jar directory
+      run: mkdir extracted-jar
+
+    - name: Move Artifact
+      run: mv staging/*.jar extracted-jar/
 
   create_release:
     needs: publish-job
