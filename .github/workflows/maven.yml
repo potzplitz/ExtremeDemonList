@@ -24,21 +24,10 @@ jobs:
         run: mvn -B package --file pom.xml
 
   release:
-    runs-on: ubuntu-latest
-    needs: build
+    name: "Release"
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Build & test
-        run: echo "done!"
-
-      - name: Create Release
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: false
-          files: |
-            LICENSE.txt
-            *.jar
-          # Setzen Sie einen statischen Tag oder generieren Sie einen dynamischen Tag
-          automatic_release_tag: "release-$(date +'%Y%m%d%H%M%S')"
+     - uses: "marvinpinto/action-automatic-releases@latest"
+       with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
