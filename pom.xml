@@ -23,17 +23,16 @@
     </dependency>
   </dependencies>
   <build>
-    <directory>target</directory>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version> <!-- Stelle sicher, dass diese Version Java 17 unterstützt -->
-        <configuration>
-          <release>17</release> <!-- Setze dies auf die gewünschte Java-Version -->
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.2.0</version> <!-- Aktualisiere auf die gewünschte Version -->
+      <configuration>
+        <outputDirectory>builds</outputDirectory>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
 </project>
