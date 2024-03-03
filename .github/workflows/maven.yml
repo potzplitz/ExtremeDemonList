@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -23,46 +24,23 @@ jobs:
     - name: Build with Maven
       run: |
         mvn -B package --file pom.xml
-        # Create target directory if not exists
         mkdir -p target
 
-  create_release:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Generate tag
-        id: tag
-        run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
+    - name: Extract artifact
+      run: unzip target/*.zip -d target/artifact
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
-          draft: false
-          prerelease: false
+    - name: Get current timestamp
+      id: timestamp
+      run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
 
-      - name: Find Jar file
-        id: find_jar
-        run: |
-          jar_path=$(find target -name '*.jar' -type f)
-          echo "::set-output name=jar_path::$jar_path"
+    - name: Create directory with run ID
+      run: mkdir -p ${{ github.workspace }}/target/artifact_${{ steps.timestamp.outputs.timestamp }}
 
-      - name: Upload Jar as Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.find_jar.outputs.jar_path }}
-          asset_name: my-java-app.jar
-          asset_content_type: application/java-archive
+    - name: Move artifact to directory with run ID
+      run: mv target/artifact/* ${{ github.workspace }}/target/artifact_${{ steps.timestamp.outputs.timestamp }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifact_${{ steps.timestamp.outputs.timestamp }}
+        path: ${{ github.workspace }}/target/artifact_${{ steps.timestamp.outputs.timestamp }}
