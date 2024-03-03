@@ -64,3 +64,4 @@ jobs:
           asset_path: extracted-jar/*.jar
           asset_name: your-artifact-name.jar
           asset_content_type: application/java-archive
+
