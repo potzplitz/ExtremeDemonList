@@ -3,14 +3,15 @@ name: Build and Release Java Project
 on:
   push:
     branches:
-      - main  # oder den Namen des Hauptbranchs Ihres Projekts
+      - main
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     - name: Set up JDK 17
       uses: actions/setup-java@v2
@@ -18,27 +19,21 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Configure Git User
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-
-    - name: Create Git Tag
-      run: git tag $(date +'%Y%m%d%H%M%S') -a -m "Generated tag from GitHub Actions"
-
-    - name: Push Tags
-      run: git push --tags
-
     - name: Build with Maven
       run: mvn clean install
 
+    - name: Get the version
+      id: get_version
+      run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
     - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: $(git describe --tags --abbrev=0)
-        release_name: Release $(git describe --tags --abbrev=0)
+        tag_name: ${{ env.RELEASE_VERSION }}
+        release_name: Release ${{ env.RELEASE_VERSION }}
         draft: false
         prerelease: false
 
@@ -49,5 +44,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./target/ExtremeDemonList-0.0.1-SNAPSHOT.jar
-        asset_name: ExtremeDemonList-0.0.1-SNAPSHOT.jar
+        asset_name: ExtremeDemonList-${{ env.RELEASE_VERSION }}.jar
         asset_content_type: application/java-archive
