@@ -1,4 +1,4 @@
-name: Java Maven Build & Upload Artifact
+name: Java Maven Build & Publish Artifact
 
 on:
   push:
@@ -25,30 +25,33 @@ jobs:
         name: packaged-jar
         path: target/*.jar
 
-  extract-artifact:
+  publish-job:
     runs-on: ubuntu-latest
     needs: build_test
     steps:
-    - name: Download artifact
-      run: |
-        ARTIFACT_URL=$(curl -s "https://github.com/potzplitz/ExtremeDemonList/actions/runs/${{ github.run_id }}/artifacts" | grep -oP '(?<=href=")[^"]+(?=")' | grep -m 1 -oP '\d+$')
-        echo "::set-output name=artifact_url::$ARTIFACT_URL"
-      id: get_artifact_url
-    - name: Download and extract artifact
-      run: |
-        wget -O artifact.zip "https://github.com/potzplitz/ExtremeDemonList/actions/runs/${{ github.run_id }}/artifacts/download/${{ steps.get_artifact_url.outputs.artifact_url }}"
-        unzip artifact.zip -d extracted-artifact
-
-    # Rename the directory to include the run ID
-    - name: Get current timestamp
-      id: timestamp
-      run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
-
-    - name: Rename artifact directory with run ID
-      run: mv extracted-artifact ${{ github.workspace }}/extracted-artifact_${{ steps.timestamp.outputs.timestamp }}
-
-    - name: Upload extracted artifact
-      uses: actions/upload-artifact@v3
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
       with:
-        name: extracted-artifact-${{ steps.timestamp.outputs.timestamp }}
-        path: ${{ github.workspace }}/extracted-artifact_${{ steps.timestamp.outputs.timestamp }}
+        name: packaged-jar
+        path: staging
+
+  create_release:
+    needs: publish-job
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+    steps:
+      - name: Extract Artifact
+        run: |
+          unzip -o staging/packaged-jar/*.jar -d extracted-jar
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          files: |
+            extracted-jar/*
