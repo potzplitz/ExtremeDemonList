@@ -77,7 +77,6 @@ public class MainGUI {
 	private FetchData fetch = new FetchData();
 	private Elements elements = new Elements();
 	
-
 	public void build() throws IOException {
 
 		GuiData data = new GuiData();
