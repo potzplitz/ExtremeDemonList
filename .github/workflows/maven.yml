@@ -43,7 +43,7 @@ jobs:
         path: staging
 
     - name: List files in staging directory
-      run: ls staging
+      run: ls -R staging
 
   create_release:
     needs: publish-job
