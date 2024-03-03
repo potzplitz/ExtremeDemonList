@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build_test:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -30,13 +30,6 @@ jobs:
         with:
           name: packaged-jar
           path: target/*.jar
-
-  publish-job:
-    runs-on: ubuntu-latest
-    needs: build_test
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
 
       - name: Download artifact
         uses: actions/download-artifact@v3
