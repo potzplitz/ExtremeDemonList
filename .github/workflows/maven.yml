@@ -16,7 +16,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
-        java-version: '11' # Anpassen, falls eine andere JDK-Version verwendet werden soll
+        java-version: '17' # Anpassen, falls eine andere JDK-Version verwendet werden soll
         
     - name: Build Java project
       run: |
