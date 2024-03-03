@@ -32,10 +32,6 @@ public class Main {
 
 		load.updateBar("Ladevorgang abgeschlossen");
 		load.close();
-		
-		System.out.println("hello world");
-		
-		
 	}
 
 }
