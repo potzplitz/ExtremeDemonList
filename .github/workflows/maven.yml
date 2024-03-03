@@ -31,20 +31,18 @@ jobs:
           name: packaged-jar
           path: target/*.jar
 
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: packaged-jar
-          path: staging
+      - name: Set release tag
+        id: set_release_tag
+        run: echo "::set-output name=RELEASE_TAG::$(date +'%Y%m%d%H%M%S')"
 
       - name: Create extracted-jar directory
         run: mkdir extracted-jar
 
-      - name: Move Artifact
-        run: mv staging/*.jar extracted-jar/
-
-      - name: Set release tag
-        run: echo "::set-output name=RELEASE_TAG::$(date +'%Y%m%d%H%M%S')"
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packaged-jar
+          path: extracted-jar
 
       - name: Create Release
         id: create_release
