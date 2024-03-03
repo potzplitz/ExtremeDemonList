@@ -2,23 +2,29 @@ name: Java Maven Build & Publish Artifact
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build_test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
@@ -29,29 +35,38 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_test
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Download artifact
+      uses: actions/download-artifact@v3
       with:
         name: packaged-jar
         path: staging
 
-  create_release:
-    needs: publish-job
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write 
-    steps:
-      - name: Extract Artifact
-        run: |
-          unzip -o staging/packaged-jar/*.jar -d extracted-jar
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          files: |
-            extracted-jar/*
+    - name: Create extracted-jar directory
+      run: mkdir extracted-jar
+
+    - name: Move Artifact
+      run: mv staging/*.jar extracted-jar/
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: Release ${{ github.sha | slice(0, 7) }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Artifact as Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: extracted-jar/*.jar
+        asset_name: your-artifact-name.jar
+        asset_content_type: application/java-archive
