@@ -60,6 +60,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./target/ExtremeDemonList-${{ steps.version.outputs.VERSION }}-SNAPSHOT.jar
+        asset_path: ./builds/ExtremeDemonList-${{ steps.version.outputs.VERSION }}-SNAPSHOT.jar
         asset_name: ExtremeDemonList-${{ steps.version.outputs.VERSION }}-SNAPSHOT.jar
         asset_content_type: application/java-archive
