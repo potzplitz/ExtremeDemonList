@@ -16,22 +16,16 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
-        java-version: '17' # Anpassen auf die gewünschte Java-Version
-        distribution: 'adopt'
-        server-id: 'github'
-        server-username: ${{ github.actor }}
-        server-password: ${{ secrets.GITHUB_TOKEN }}
-
+        java-version: '17' # Anpassen, falls eine andere JDK-Version verwendet werden soll
         
-    - name: Build Java project
-      run: |
-        ./gradlew build # Anpassen, falls du ein anderes Build-Tool verwendest
+    - name: Build Java project with Maven
+      run: mvn clean package # Anpassen, falls weitere Maven-Optionen benötigt werden
         
     - name: Create builds directory
       run: mkdir -p builds
       
     - name: Copy built JAR file
-      run: cp -r <path-to-your-build-output>/*.jar builds/ # Anpassen, je nachdem, wo deine gebauten Dateien sind
+      run: cp -r target/*.jar builds/ # Anpassen, je nachdem, wo deine gebauten Dateien sind
 
     - name: Update version.txt
       run: |
