@@ -3,51 +3,51 @@ name: Build and Release Java Project
 on:
   push:
     branches:
-      - main
+      - main  # oder den Namen des Hauptbranchs Ihres Projekts
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin'
 
-      - name: Build with Maven
-        run: mvn clean install
+    - name: Configure Git User
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
 
-      - name: Create Tag
-        run: |
-          git tag $(date +'%Y%m%d%H%M%S') -a -m "Generated tag from GitHub Actions"
-          git push --tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Git Tag
+      run: git tag $(date +'%Y%m%d%H%M%S') -a -m "Generated tag from GitHub Actions"
 
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::$(date +'%Y%m%d%H%M%S')
+    - name: Push Tags
+      run: git push --tags
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
+    - name: Build with Maven
+      run: mvn clean install
 
-      - name: Upload Artifact to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/ExtremeDemonList-0.0.1-SNAPSHOT.jar
-          asset_name: ExtremeDemonList-0.0.1-SNAPSHOT.jar
-          asset_content_type: application/java-archive
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: $(git describe --tags --abbrev=0)
+        release_name: Release $(git describe --tags --abbrev=0)
+        draft: false
+        prerelease: false
+
+    - name: Upload Artifact to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./target/ExtremeDemonList-0.0.1-SNAPSHOT.jar
+        asset_name: ExtremeDemonList-0.0.1-SNAPSHOT.jar
+        asset_content_type: application/java-archive
