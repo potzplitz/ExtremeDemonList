@@ -55,12 +55,12 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DATE: ${{ steps.get_date.outputs.date }}
         with:
-          tag_name: ${{ steps.get_date.outputs.date }}
-          release_name: Release ${{ steps.get_date.outputs.date }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: Release ${{ env.RELEASE_TAG }}
           draft: false
           prerelease: false
+  
 
       - name: Get current date and time
         id: get_date
