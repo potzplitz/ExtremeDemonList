@@ -50,14 +50,17 @@ jobs:
       - name: Move Artifact
         run: mv staging/*.jar extracted-jar/
 
+      - name: Get current date and time
+        run: echo "::set-env name=RELEASE_TAG::$(date +'%Y%m%d%H%M%S')"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.created_at }}
-          release_name: Release ${{ github.event.created_at }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: Release ${{ env.RELEASE_TAG }}
           draft: false
           prerelease: false
 
