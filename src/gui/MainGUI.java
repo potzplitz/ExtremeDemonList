@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -19,11 +20,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -51,8 +58,15 @@ public class MainGUI {
 	public JLabel level = new JLabel("Liste");
 	public JLabel creator = new JLabel("Creator");
 	public JLabel separator = new JLabel("_______________________________________________________________________________________________________________");
+	public JLabel separator2 = new JLabel("_______________________________________________________________________________________________________________");
+	public JLabel separator3 = new JLabel("_______________________________________________________________________________________________________________");
 	public JLabel verifier = new JLabel("Verifier");
+	public JLabel victorcount = new JLabel("Anzahl Victors");
+	public JLabel victor = new JLabel("Victors: ");
+	public JLabel idshow = new JLabel("ID");
+	public JLabel qualify = new JLabel("Qualifikation");
 	public JPanel recordspanel = new JPanel();
+	public JLabel ytthumbnail = new JLabel();
 	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschaft filtern");
 	public Button copyid = new Button("Level ID kopieren");
@@ -71,6 +85,8 @@ public class MainGUI {
 		data.IndexLevelID();
 		data.IndexVerifiers();
 		data.IndexCreators();
+		data.IndexQualification();
+		data.IndexYoutubeLink();
 		
 		gridLayout.setRows(data.getLocalLevels().size());
 			
@@ -96,11 +112,15 @@ public class MainGUI {
 		levelpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		levelpanel.setLayout(gridLayout);
 
+		victorcount.setBounds(10, 130, 164, 30);
 		
-		
-		
+		idshow.setBounds(10, 150, 164, 30);
 		
 		copyid.setBounds(10, 50, 164, 30);
+		
+		qualify.setBounds(10, 170, 164, 30);
+		
+		victor.setBounds(1, 276, 164, 30);
 		 
 	     scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	     scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -112,6 +132,8 @@ public class MainGUI {
 	     elements.infopanel().setVisible(false);
 	     
 	     separator.setBounds(0, 70, 300, 30);
+	     separator2.setBounds(0 ,178, 400, 30);
+	     separator3.setBounds(0, 263, 300, 30);
 	     
 	     creator.setBounds(10, 90, 164, 30);
 	     
@@ -120,6 +142,11 @@ public class MainGUI {
 	     search.setBounds(1, 1, 500, 60);
 	     
 	     show.setBounds(500, 1, 200, 60);
+	     
+	     ytthumbnail.setBounds(0, 200, 184, 85);
+
+	     recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	     
 	        
 	        Thread thread = new Thread(new Runnable() {
 				@Override
@@ -145,6 +172,8 @@ public class MainGUI {
 			        	JButton uncompleted = new JButton("\u2713");
 			        	uncompleted.setBounds(640, 17, 17, 17);
 			        	uncompleted.setMargin(new Insets(0,0,0,0));
+			        	
+			        	
 			        	
 			        	File file = new File("C:\\ExtremeDemonList\\completed\\" + fetch.allLevels().get(i)+ ".json");
 			        	
@@ -192,15 +221,61 @@ public class MainGUI {
 			        	contents.addMouseListener(new MouseListener() {
 							@Override
 							public void mouseClicked(MouseEvent e) {	
+								
+								
+								String url = data.getYoutubeLink().get(index);
+								
+								
+								 if (url != null && url.contains("v=")) {
+							            int startIndex = url.indexOf("v=") + 2;
+							            int endIndex = url.indexOf('&', startIndex);
+							            if (endIndex == -1) {
+							                endIndex = url.length();
+							            }
+							            String videoId = url.substring(startIndex, endIndex);
+							            
+							            String videoThumb = "https://img.youtube.com/vi/" + videoId +"/0.jpg";
+										
+										System.out.println(videoThumb);
+										
+										
+										int labelWidth = ytthumbnail.getWidth();
+										int labelHeight = ytthumbnail.getHeight();
+										
+										URL imageget;
+										try {
+											imageget = new URL(videoThumb);
+											BufferedImage originalImage = ImageIO.read(imageget);
 
+											// Das Bild skalieren, um in das JLabel zu passen
+											Image scaledImage = originalImage.getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+
+											// Ein ImageIcon erstellen und dem JLabel zuweisen
+											ytthumbnail.setIcon(new ImageIcon(scaledImage));
+										} catch (IOException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+											
+										
+										
+							        }
+								
+
+								
+
+								
+								
 								level.setText(data.getLocalLevels().get(index));
 								verifier.setText("Verifier: " + data.getVerifier().get(index));
 								creator.setText("Creator: " + data.getCreator().get(index));
+								idshow.setText("ID: " + data.getId().get(index));
+								qualify.setText("Qualifikation: " + data.getQualification().get(index) + "%");
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
 								FetchData fetchData = new FetchData();
 								
-								recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+								
 								try {
 									recordspanel.setLayout(new GridLayout(GuiData.allVictors(fetchData.allLevels().get(index)).size(), 1));
 								} catch (IOException e1) {
@@ -216,6 +291,8 @@ public class MainGUI {
 								try {
 								     // Instanz der FetchData-Klasse erstellen
 								    ArrayList<String> victors = GuiData.allVictors(fetchData.allLevels().get(index)); // Methode allVictors aufrufen
+								    
+								    victorcount.setText("Anzahl Victors: " + victors.size());
 								    
 								    recordspanel.setLayout(new GridLayout(victors.size(), 1));
 
@@ -359,12 +436,7 @@ public class MainGUI {
 			        	        if (e.getStateChange() == ItemEvent.SELECTED) {
 			        	            if (!contents.getBackground().equals(Color.decode("#cbffbf"))) {
 			        	                levelpanel.remove(contents);
-			        	                try {
-											gridLayout.setRows(data.allVictors(data.getLocalLevels().get(index)).size());
-										} catch (IOException e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
+			        	                gridLayout.setRows(data.getLocalLength());
 			        	                scroll.repaint();
 			        	                scroll.revalidate();
 			        	            }
@@ -401,9 +473,16 @@ public class MainGUI {
 	    elements.infopanel().add(copyid);
 	    elements.infopanel().add(level, SwingConstants.CENTER);
 	    elements.infopanel().add(separator);
+	    elements.infopanel().add(separator2);
+	    elements.infopanel().add(separator3);
 	    elements.infopanel().add(creator);
 	    elements.infopanel().add(verifier);
 	    elements.infopanel().add(records);
+	    elements.infopanel().add(victorcount);
+	    elements.infopanel().add(idshow);
+	    elements.infopanel().add(qualify);
+	    elements.infopanel().add(victor);
+	    elements.infopanel().add(ytthumbnail);
 	        
 	       
 	    main.add(search);
