@@ -1,55 +1,36 @@
-name: Build und Veröffentlichen des Java-Projekts
+name: Java Build and File Update
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-permissions:
-  contents: write
+      - main # Anpassen, falls du andere Branches verwenden möchtest
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout des Codes
+    - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Setze JDK 17 ein
+      
+    - name: Set up JDK
       uses: actions/setup-java@v2
       with:
-        java-version: '17'
-        distribution: 'temurin'
-
-    - name: Konfiguriere Git-Benutzer
+        java-version: '11' # Anpassen, falls eine andere JDK-Version verwendet werden soll
+        
+    - name: Build Java project
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        ./gradlew build # Anpassen, falls du ein anderes Build-Tool verwendest
+        
+    - name: Create builds directory
+      run: mkdir -p builds
+      
+    - name: Copy built JAR file
+      run: cp -r <path-to-your-build-output>/*.jar builds/ # Anpassen, je nachdem, wo deine gebauten Dateien sind
 
-    - name: Bestimme Versionsnummer
-      id: version
-      run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-
-    - name: Erstelle Git-Tag
-      run: git tag v${{ steps.version.outputs.VERSION }} -a -m "Generierter Tag von GitHub Actions"
-
-    - name: Sende Tags
-      run: git push --tags --quiet
-
-    - name: Baue mit Maven
-      run: mvn clean install
-      working-directory: ./  # Set the working directory to the root of the project
-
-    - name: Lade Artefakt zur Veröffentlichung hoch
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        UPLOAD_URL: ${{ secrets.UPLOAD_URL }}  # Use the appropriate secret or variable containing the upload URL
-      with:
-        asset_path: ./target/ExtremeDemonList-${{ steps.version.outputs.VERSION }}-SNAPSHOT.jar  # Update the path to the generated JAR file
-        asset_name: ExtremeDemonList-${{ steps.version.outputs.VERSION }}-SNAPSHOT.jar
-        asset_content_type: application/java-archive
+    - name: Update version.txt
+      run: |
+        sed -i 's/old_text/new_text/g' ver/version.txt # Anpassen der alten und neuen Texte
+        git add ver/version.txt builds/*.jar
+        git commit -m "Updated version and built JAR file"
+        git push
