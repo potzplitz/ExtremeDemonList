@@ -51,7 +51,8 @@ jobs:
         run: mv staging/*.jar extracted-jar/
 
       - name: Get current date and time
-        run: echo "::set-env name=RELEASE_TAG::$(date +'%Y%m%d%H%M%S')"
+        id: get_date
+        run: echo "$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -59,8 +60,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          release_name: Release ${{ env.RELEASE_TAG }}
+          tag_name: ${{ env.DATE }}
+          release_name: Release ${{ env.DATE }}
           draft: false
           prerelease: false
 
