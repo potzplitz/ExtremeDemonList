@@ -16,7 +16,12 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
-        java-version: '17' # Anpassen, falls eine andere JDK-Version verwendet werden soll
+        java-version: '17' # Anpassen auf die gewünschte Java-Version
+        distribution: 'adopt'
+        server-id: 'github'
+        server-username: ${{ github.actor }}
+        server-password: ${{ secrets.GITHUB_TOKEN }}
+
         
     - name: Build Java project
       run: |
