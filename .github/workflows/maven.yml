@@ -27,13 +27,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      contents: write # This line gives the token permission to create releases
+      contents: write
     steps:
       - uses: actions/checkout@v3
       - name: Generate tag
         id: tag
         run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
       - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
