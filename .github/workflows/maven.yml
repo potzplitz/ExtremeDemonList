@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -26,6 +29,9 @@ jobs:
 
     - name: Erstelle Git-Tag
       run: git tag $(date +'%Y%m%d%H%M%S') -a -m "Generierter Tag von GitHub Actions"
+
+    - name: Sende Tags
+      run: git push --tags --quiet
 
     - name: Baue mit Maven
       run: mvn clean install
