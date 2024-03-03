@@ -1,34 +1,43 @@
-name: Java CI with Maven and Release
+name: Build and Release Java Project
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main  # oder den Namen des Hauptbranchs Ihres Projekts
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+    - name: Build with Maven
+      run: mvn clean install
 
-  release:
-    name: "Release"
-    runs-on: "ubuntu-latest"
-    steps:
-     - uses: "marvinpinto/action-automatic-releases@latest"
-       with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
         prerelease: false
-        automatic_release_tag: "release-$(date +'%Y%m%d%H%M%S')"
+
+    - name: Upload Artifact to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./target/your-artifact.jar
+        asset_name: your-artifact.jar
+        asset_content_type: application/java-archive
