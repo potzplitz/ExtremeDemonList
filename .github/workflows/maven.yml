@@ -55,7 +55,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.sha }}
-        release_name: Release ${{ github.sha }}
+        release_name: Release ${{ github.sha | slice(0, 7) }} # Hier verwenden wir die ersten 7 Zeichen des SHA als Release-Name
         draft: false
         prerelease: false
 
