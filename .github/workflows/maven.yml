@@ -33,24 +33,26 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: packaged-jar
-        path: staging#
-
-  create_release:
-    needs: build_test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # This line gives the token permission to create releases
-    steps:
-      - uses: actions/checkout@v3
-      - name: Generate tag
-        id: tag
-        run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
-          draft: false
-          prerelease: false
+        path: staging
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v1.0.0
+        release_name: Release 1.0.0
+        body: |
+          Release von Version 1.0.0
+          Das Artefakt kann unter folgender URL heruntergeladen werden: ${{ steps.download-artifact.outputs.download-url }}
+        draft: false
+        prerelease: false
+    - name: Upload Jar as Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: target/*.jar
+        asset_name: my-java-app.jar
+        asset_content_type: application/java-archive
