@@ -50,20 +50,21 @@ jobs:
       - name: Move Artifact
         run: mv staging/*.jar extracted-jar/
 
-      - name: Get current date and time
-        id: get_date
-        run: echo "$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DATE: ${{ steps.get_date.outputs.date }}
         with:
-          tag_name: ${{ env.DATE }}
-          release_name: Release ${{ env.DATE }}
+          tag_name: ${{ steps.get_date.outputs.date }}
+          release_name: Release ${{ steps.get_date.outputs.date }}
           draft: false
           prerelease: false
+
+      - name: Get current date and time
+        id: get_date
+        run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
 
       - name: Upload Artifact as Release Asset
         uses: actions/upload-release-asset@v1
