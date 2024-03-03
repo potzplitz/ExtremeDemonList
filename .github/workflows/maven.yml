@@ -52,7 +52,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: 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
+        GITHUB_TOKEN: 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
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
@@ -62,7 +62,7 @@ jobs:
     - name: Upload Artifact as Release Asset
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: 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
+        GITHUB_TOKEN: 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
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: extracted-jar/*.jar
