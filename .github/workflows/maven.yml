@@ -3,7 +3,7 @@ name: Java Build and File Update
 on:
   push:
     branches:
-      - main # Anpassen, falls du andere Branches verwenden möchtest
+      - main
 
 jobs:
   build:
@@ -12,24 +12,28 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
+
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
-        java-version: '17' # Anpassen, falls eine andere JDK-Version verwendet werden soll
-        
+        java-version: '17'
+        distribution: 'adopt' # Hier wird die fehlende Eingabe "distribution" hinzugefügt
+        server-id: 'github'
+        server-username: ${{ github.actor }}
+        server-password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build Java project with Maven
-      run: mvn clean package # Anpassen, falls weitere Maven-Optionen benötigt werden
+      run: mvn clean package
         
     - name: Create builds directory
       run: mkdir -p builds
       
     - name: Copy built JAR file
-      run: cp -r target/*.jar builds/ # Anpassen, je nachdem, wo deine gebauten Dateien sind
+      run: cp -r target/*.jar builds/
 
     - name: Update version.txt
       run: |
-        sed -i 's/old_text/new_text/g' ver/version.txt # Anpassen der alten und neuen Texte
+        sed -i 's/old_text/new_text/g' ver/version.txt
         git add ver/version.txt builds/*.jar
         git commit -m "Updated version and built JAR file"
         git push
