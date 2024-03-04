@@ -97,6 +97,8 @@ public class MainGUI {
 		level.setBounds(10, 10, 200, 30);
 		level.setFont(level.getFont().deriveFont(15f));
 		
+		
+		
 		filtercompleted.setBounds(720, 15, 200, 30);
 		
 		progress.setBounds(200, 300, 500, 30);
