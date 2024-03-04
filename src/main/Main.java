@@ -12,9 +12,7 @@ import gui.LoadMenu;
 public class Main {
 	
 	public static void main(String[] args) throws IOException, UnsupportedLookAndFeelException {
-		
-		System.out.println("sdfsafs");
-		
+
 		LoadMenu load = new LoadMenu();
 		load.onLoad();
 		
