@@ -78,7 +78,6 @@ public class MainGUI {
 	private Elements elements = new Elements();
 	 
 	public void build() throws IOException {
-
 		GuiData data = new GuiData();
 		data.IndexLevelName();
 		data.IndexLevelID();
