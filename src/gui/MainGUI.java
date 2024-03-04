@@ -96,9 +96,7 @@ public class MainGUI {
 		
 		level.setBounds(10, 10, 200, 30);
 		level.setFont(level.getFont().deriveFont(15f));
-		
-		
-		
+
 		filtercompleted.setBounds(720, 15, 200, 30);
 		
 		progress.setBounds(200, 300, 500, 30);
@@ -146,9 +144,7 @@ public class MainGUI {
 	     
 	     show.setBounds(500, 1, 200, 60);
 	     
-
 	     recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-	     
 	        
 	        Thread thread = new Thread(new Runnable() {
 				@Override
@@ -164,9 +160,7 @@ public class MainGUI {
 			        	contents.setPreferredSize(new Dimension(600, 50));
 			        	contents.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			        	contents.setLayout(null);
-			        	
-			        	
-			        	
+	
 			        	JButton completed = new JButton("x");
 			        	completed.setBounds(640, 17, 17, 17);
 			        	completed.setMargin(new Insets(0,0,0,0));
@@ -174,19 +168,13 @@ public class MainGUI {
 			        	JButton uncompleted = new JButton("\u2713");
 			        	uncompleted.setBounds(640, 17, 17, 17);
 			        	uncompleted.setMargin(new Insets(0,0,0,0));
-			        	
-			        	
-			        	
+        	
 			        	File file = new File("C:\\ExtremeDemonList\\completed\\" + fetch.allLevels().get(i)+ ".json");
-			        	
-			        	
-			        	
-			        	completed.addActionListener(new ActionListener() {
 
+			        	completed.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-									contents.setBackground(Color.decode("#cbffbf"));
-									
+									contents.setBackground(Color.decode("#cbffbf"));	
 									completed.setVisible(false);
 									uncompleted.setVisible(true);
 									
@@ -196,22 +184,17 @@ public class MainGUI {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-							}
-			        		
-			        	});
+								}	
+			        		});
 			        	
 			        	uncompleted.addActionListener(new ActionListener() {
-
 							@Override
 							public void actionPerformed(ActionEvent e) {
-									contents.setBackground(Color.WHITE);
-									
+									contents.setBackground(Color.WHITE);		
 									uncompleted.setVisible(false);
-									completed.setVisible(true);
-									
+									completed.setVisible(true);		
 									file.delete();
-							}
-			        		
+							}        		
 			        	});
 			        	
 						if(new File("C:\\ExtremeDemonList\\completed\\" + fetch.allLevels().get(i)+ ".json").exists()) {
@@ -223,7 +206,6 @@ public class MainGUI {
 			        	contents.addMouseListener(new MouseListener() {
 							@Override
 							public void mouseClicked(MouseEvent e) {	
-								
 								showinfos.addActionListener(new ActionListener() {
 								    @Override
 								    public void actionPerformed(ActionEvent e) {
@@ -232,10 +214,6 @@ public class MainGUI {
 								        ver.showInfo(url);
 								    }
 								});
-								
-								
-								
-								
 
 								level.setText(data.getLocalLevels().get(index));
 								verifier.setText("Verifier: " + data.getVerifier().get(index));
@@ -245,7 +223,6 @@ public class MainGUI {
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
 								FetchData fetchData = new FetchData();
-								
 								
 								try {
 									recordspanel.setLayout(new GridLayout(GuiData.allVictors(fetchData.allLevels().get(index)).size(), 1));
@@ -285,24 +262,17 @@ public class MainGUI {
 								}
 
 								recordspanel.revalidate();
-
-
 								
 								copyid.addActionListener(new ActionListener() {
-
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										
 										StringSelection stringSelection = new StringSelection(data.getId().get(index));
 										Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-										clipboard.setContents(stringSelection, null);	
-										
+										clipboard.setContents(stringSelection, null);				
 									}
 					        		
-					        	});
-								
-								
-								
+					        	});		
 							}
 							@Override
 							public void mousePressed(MouseEvent e) {						
@@ -325,7 +295,6 @@ public class MainGUI {
 			        	rank.setName(i + "");
 			        	
 			        	show.addActionListener(new ActionListener() {
-
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								levelpanel.add(contents, 0);
@@ -367,9 +336,7 @@ public class MainGUI {
 							}
 			        		
 			        	});
-			        	
-			        	
-			        	
+	
 			        	levelname = new JLabel();
 			        	levelname.setText(data.getLocalLevels().get(i));
 			        	levelname.setBounds(290, 10, 300, 30);
@@ -418,9 +385,7 @@ public class MainGUI {
 			        	        levelpanel.revalidate();
 			        	    }
 			        	});
-			        	
-			        	
-			        	
+  	
 			        	contents.add(levelname);
 			        	contents.add(rank);
 			        	contents.add(completed);
@@ -428,9 +393,7 @@ public class MainGUI {
 			        	levelpanel.add(contents);
 			        	
 			        }
-					
-					
-					
+
 					scroll.setVisible(true);
 					elements.infopanel().setVisible(true);
 					progress.setVisible(false);
@@ -453,10 +416,8 @@ public class MainGUI {
 	    elements.infopanel().add(idshow);
 	    elements.infopanel().add(qualify);
 	    elements.infopanel().add(victor);
-	  //  elements.infopanel().add(ytthumbnail);
 	    elements.infopanel().add(showinfos);
-	        
-	       
+	               
 	    main.add(search);
 		main.add(currentLevel);
 	    main.add(info);
@@ -467,5 +428,4 @@ public class MainGUI {
 		main.add(elements.infopanel());
 		main.setVisible(true);
 	}
-	
 }
