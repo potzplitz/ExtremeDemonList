@@ -69,7 +69,7 @@ public class MainGUI {
 	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschaft filtern");
 	public Button copyid = new Button("Level ID kopieren");
-	public Button showinfos = new Button("Verifikationsinfos anzeigen");
+	public Button showinfos = new Button("Mehr Infos anzeigen");
 	GridLayout gridLayout = new GridLayout(3, 1);
 	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -400,7 +400,6 @@ public class MainGUI {
 					info.setVisible(false);
 					currentLevel.setVisible(false);
 				}
-	        	
 	        });
 	        thread.start();
 	    
