@@ -10,7 +10,6 @@
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
   <dependencies>
-    <!-- Dependencies hier einfügen -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
