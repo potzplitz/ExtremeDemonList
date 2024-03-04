@@ -67,7 +67,7 @@ public class MainGUI {
 	public JLabel qualify = new JLabel("Qualifikation");
 	public JPanel recordspanel = new JPanel();
 	public JScrollPane records = new JScrollPane(recordspanel);
-	public JCheckBox filtercompleted = new JCheckBox("Nach geschaft filtern");
+	public JCheckBox filtercompleted = new JCheckBox("Nach geschafft filtern");
 	public Button copyid = new Button("Level ID kopieren");
 	public Button showinfos = new Button("Mehr Infos anzeigen");
 	GridLayout gridLayout = new GridLayout(3, 1);
@@ -119,6 +119,7 @@ public class MainGUI {
 		qualify.setBounds(10, 170, 164, 30);
 		
 		victor.setBounds(1, 276, 164, 30);
+		records.getVerticalScrollBar().setUnitIncrement(16);
 		
 		showinfos.setBounds(12, 227, 160, 30);
 		 
