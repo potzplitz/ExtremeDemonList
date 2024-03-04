@@ -11,17 +11,11 @@ public class Elements {
 	private JPanel panel = new JPanel();
 	
 	public JPanel infopanel() {
-		
 		if(lock == 0) {
 			lock = 1;
 			
-			System.out.println("sdfadsf");
-			
-			
 			panel.setBackground(Color.LIGHT_GRAY);
-			panel.setLayout(null);
-			
-			
+			panel.setLayout(null);		
 		}
 		
 		return panel;
