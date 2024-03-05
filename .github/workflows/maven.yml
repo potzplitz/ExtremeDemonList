@@ -7,7 +7,54 @@ on:
       - main
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      next_version: ${{ steps.versioning.outputs.next_version }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Stelle sicher, dass alle Tags geholt werden
+
+      - name: Calculate next version
+        id: versioning
+        run: |
+          # Annahme: Versionstags folgen dem Format vMajor.Minor.Patch
+          # Hole den letzten Versionstag
+          LAST_VERSION_TAG=$(git tag --list 'v*' --sort=-v:refname | head -n 1)
+          echo "Letzte Version: $LAST_VERSION_TAG"
+          
+          # Extrahiere die einzelnen Komponenten der Version
+          if [[ $LAST_VERSION_TAG =~ v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            MAJOR=${BASH_REMATCH[1]}
+            MINOR=${BASH_REMATCH[2]}
+            PATCH=${BASH_REMATCH[3]}
+          else
+            echo "Kein gültiger Versionstag gefunden. Standardwerte werden verwendet."
+            MAJOR=0
+            MINOR=0
+            PATCH=0
+          fi
+          
+          # Inkrementiere die Patch-Version
+          PATCH=$((PATCH + 1))
+          if [ "$PATCH" -gt 9 ]; then
+            PATCH=0
+            MINOR=$((MINOR + 1))
+            if [ "$MINOR" -gt 9 ]; then
+              MINOR=0
+              MAJOR=$((MAJOR + 1))
+            fi
+          fi
+          
+          # Setze die nächste Version
+          NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "Nächste Version: $NEXT_VERSION"
+          echo "::set-output name=next_version::$NEXT_VERSION"
+  
   publish:
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -20,35 +67,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: packaged-jar
-          path: target/*.jar
-
-      - name: Set release tag
-        id: set_release_tag
-        run: echo "::set-output name=RELEASE_TAG::$(date +'%Y%m%d%H%M%S')"
-
-      - name: Create extracted-jar directory
-        run: mkdir extracted-jar
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: packaged-jar
-          path: extracted-jar
-
-      - name: Get commit message and description
-        id: get_commit_info
-        run: |
-          COMMIT_MSG=$(git log --format=%B -n 1 ${{ github.sha }})
-          COMMIT_DESC=$(git show -s --format=%b ${{ github.sha }})
-          echo "::set-output name=COMMIT_MSG::$COMMIT_MSG"
-          echo "::set-output name=COMMIT_DESC::$COMMIT_DESC"
+      # Füge alle anderen Schritte deines aktuellen Workflows hier ein ...
 
       - name: Create Release
         id: create_release
@@ -56,18 +75,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.set_release_tag.outputs.RELEASE_TAG }}
-          release_name: ${{ steps.get_commit_info.outputs.COMMIT_MSG }}
+          tag_name: v${{ needs.prepare.outputs.next_version }}
+          release_name: ExtremeDemonList v${{ needs.prepare.outputs.next_version }}
           body: ${{ steps.get_commit_info.outputs.COMMIT_DESC }}
           draft: false
           prerelease: false
 
-      - name: Upload Artifact as Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: extracted-jar/ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-          asset_name: ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-          asset_content_type: application/ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+      # Füge alle anderen Schritte deines aktuellen Workflows hier ein ...
