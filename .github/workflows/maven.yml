@@ -1,84 +1,81 @@
+name: Java Maven Build & Publish Artifact
+
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      next_version: ${{ steps.versioning.outputs.next_version }}
-    steps:
+@@ -15,27 +13,61 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # Stelle sicher, dass alle Tags geholt werden
 
-      - name: Calculate next version
-        id: versioning
+      - name: Check for [release] in commit message
+        id: check_release
         run: |
-          # Annahme: Versionstags folgen dem Format vMajor.Minor.Patch
-          # Hole den letzten Versionstag
-          LAST_VERSION_TAG=$(git tag --list 'v*' --sort=-v:refname | head -n 1)
-          echo "Letzte Version: $LAST_VERSION_TAG"
-          
-          # Extrahiere die einzelnen Komponenten der Version
-          if [[ $LAST_VERSION_TAG =~ v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
-            MAJOR=${BASH_REMATCH[1]}
-            MINOR=${BASH_REMATCH[2]}
-            PATCH=${BASH_REMATCH[3]}
+          if echo "${{ github.event.head_commit.message }}" | grep -q "\[release\]"; then
+            echo "Release tag found in commit message, proceeding with the workflow..."
+            echo "::set-output name=proceed::true"
           else
-            echo "Kein gültiger Versionstag gefunden. Standardwerte werden verwendet."
-            MAJOR=0
-            MINOR=0
-            PATCH=0
+            echo "Release tag not found in commit message, stopping the workflow..."
+            echo "::set-output name=proceed::false"
           fi
-          
-          # Inkrementiere die Patch-Version
-          PATCH=$((PATCH + 1))
-          if [ "$PATCH" -gt 9 ]; then
-            PATCH=0
-            MINOR=$((MINOR + 1))
-            if [ "$MINOR" -gt 9 ]; then
-              MINOR=0
-              MAJOR=$((MAJOR + 1))
-            fi
-          fi
-          
-          # Setze die nächste Version
-          NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
-          echo "Nächste Version: $NEXT_VERSION"
-          echo "::set-output name=next_version::$NEXT_VERSION"
-  
-  publish:
-    needs: prepare
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
       - name: Set up JDK 17
+        if: steps.check_release.outputs.proceed == 'true'
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+      # Fügen Sie das gleiche if: Bedingung zu allen nachfolgenden Schritten hinzu
+      # Beispiel:
 
-      # Füge alle anderen Schritte deines aktuellen Workflows hier ein ...
+      - name: Build with Maven
+        if: steps.check_release.outputs.proceed == 'true'
+        run: mvn -B package --file pom.xml
+      # Wiederholen Sie das für alle nachfolgenden Schritte...
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: packaged-jar
+          path: target/*.jar
+
+      - name: Set release tag
+        id: set_release_tag
+        run: echo "::set-output name=RELEASE_TAG::$(date +'%Y%m%d%H%M%S')"
+
+      - name: Create extracted-jar directory
+        run: mkdir extracted-jar
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packaged-jar
+          path: extracted-jar
+
+      - name: Get commit message and description
+        id: get_commit_info
+        run: |
+          COMMIT_MSG=$(git log --format=%B -n 1 ${{ github.sha }})
+          COMMIT_DESC=$(git show -s --format=%b ${{ github.sha }})
+          echo "::set-output name=COMMIT_MSG::$COMMIT_MSG"
+          echo "::set-output name=COMMIT_DESC::$COMMIT_DESC"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ needs.prepare.outputs.next_version }}
-          release_name: ExtremeDemonList v${{ needs.prepare.outputs.next_version }}
+          tag_name: ${{ steps.set_release_tag.outputs.RELEASE_TAG }}
+          release_name: ${{ steps.get_commit_info.outputs.COMMIT_MSG }}
           body: ${{ steps.get_commit_info.outputs.COMMIT_DESC }}
           draft: false
           prerelease: false
 
-      # Füge alle anderen Schritte deines aktuellen Workflows hier ein ...
+      - name: Upload Artifact as Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: extracted-jar/ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+          asset_name: ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+          asset_content_type: application/ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
