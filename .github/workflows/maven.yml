@@ -2,8 +2,12 @@ name: Java Maven Build & Publish Artifact
 
 on:
   push:
-    branches:
-@@ -15,27 +13,61 @@ jobs:
+    branches: [main, feature/*] # Specify the branches to trigger on
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
@@ -17,6 +21,7 @@ on:
             echo "Release tag not found in commit message, stopping the workflow..."
             echo "::set-output name=proceed::false"
           fi
+
       - name: Set up JDK 17
         if: steps.check_release.outputs.proceed == 'true'
         uses: actions/setup-java@v3
@@ -24,53 +29,43 @@ on:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      # Fügen Sie das gleiche if: Bedingung zu allen nachfolgenden Schritten hinzu
-      # Beispiel:
 
       - name: Build with Maven
         if: steps.check_release.outputs.proceed == 'true'
         run: mvn -B package --file pom.xml
-      # Wiederholen Sie das für alle nachfolgenden Schritte...
+
+      # Ensure all subsequent steps that depend on the build/release process also include the conditional check
+      # Example for the Upload artifact step; repeat for others as necessary
 
       - name: Upload artifact
+        if: steps.check_release.outputs.proceed == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: packaged-jar
           path: target/*.jar
 
+      # Correct and continue your steps with the appropriate conditional checks and proper configurations
+
       - name: Set release tag
-        id: set_release_tag
+        if: steps.check_release.outputs.proceed == 'true'
         run: echo "::set-output name=RELEASE_TAG::$(date +'%Y%m%d%H%M%S')"
 
-      - name: Create extracted-jar directory
-        run: mkdir extracted-jar
+      # Add the conditional checks to all steps that should only run if the release tag is present
 
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: packaged-jar
-          path: extracted-jar
-
-      - name: Get commit message and description
-        id: get_commit_info
-        run: |
-          COMMIT_MSG=$(git log --format=%B -n 1 ${{ github.sha }})
-          COMMIT_DESC=$(git show -s --format=%b ${{ github.sha }})
-          echo "::set-output name=COMMIT_MSG::$COMMIT_MSG"
-          echo "::set-output name=COMMIT_DESC::$COMMIT_DESC"
       - name: Create Release
-        id: create_release
+        if: steps.check_release.outputs.proceed == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.set_release_tag.outputs.RELEASE_TAG }}
-          release_name: ExtremeDemonList v${{ steps.get_commit_info.outputs.RELEASE_TAG }}
+          release_name: ExtremeDemonList v${{ steps.set_release_tag.outputs.RELEASE_TAG }}
           body: ${{ steps.get_commit_info.outputs.COMMIT_DESC }}
           draft: false
           prerelease: false
 
       - name: Upload Artifact as Release Asset
+        if: steps.check_release.outputs.proceed == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -78,4 +73,4 @@ on:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: extracted-jar/ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
           asset_name: ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-          asset_content_type: application/ExtremeDemonList-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+          asset_content_type: application/java-archive # Corrected content type for a JAR file
