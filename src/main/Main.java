@@ -11,7 +11,8 @@ import gui.LoadMenu;
 
 public class Main {
 	
-	public static void main(String[] args) throws IOException, UnsupportedLookAndFeelException {
+	public static void main(String[] args) throws IOException, UnsupportedLookAndFeelException { 
+
 
 		LoadMenu load = new LoadMenu();
 		load.onLoad();
