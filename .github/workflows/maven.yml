@@ -77,7 +77,7 @@ jobs:
         with:
           tag_name: v${{ needs.prepare.outputs.next_version }}
           release_name: ExtremeDemonList v${{ needs.prepare.outputs.next_version }}
-          body: ${{ steps.get_commit_info.outputs.COMMIT_DESC }}
+          body: ${{ steps.get_commit_info.outputs.COMMIT_MSG }}
           draft: false
           prerelease: false
 
