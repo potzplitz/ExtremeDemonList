@@ -384,7 +384,7 @@ public class MainGUI {
 			        	        levelpanel.repaint();
 			        	        levelpanel.revalidate();
 			        	    }
-			        	});
+			        	}); 
   	
 			        	contents.add(levelname);
 			        	contents.add(rank);
