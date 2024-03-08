@@ -21,6 +21,7 @@ public class GuiData {
 	private ArrayList<String> verifier = new ArrayList<String>();
 	private ArrayList<String> creator = new ArrayList<String>();
 	private ArrayList<String> ytlink = new ArrayList<String>();
+	public ArrayList<String> completed = new ArrayList<String>();
 	
 	private FetchData data = new FetchData();
 
@@ -60,7 +61,7 @@ public class GuiData {
 	
 	
 
-	public void IndexLevelName() throws IOException {
+	public void IndexData() throws IOException {
 		
 		FetchData data = new FetchData();
 		
@@ -75,169 +76,22 @@ public class GuiData {
 		
 		for(int i = 0; i < filelengthindex.length; i++) { 
 			
-			
-			
 			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
 			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
 			
 			JSONObject obj = new JSONObject(jsonstring);
+			JSONArray recordsArray = obj.getJSONArray("records");
 			
 			localLevels.add(obj.getString("name"));
-			
-
-			
-		}
-		
-		
-		
-	}
-	
-	public void IndexLevelID() throws IOException {
-		
-
-		
-		File filelength = new File("C:\\ExtremeDemonList\\levels");
-		File[] filelengthindex = filelength.listFiles();
-		
-		String jsonstring;
-		
-		localLength = filelengthindex.length;
-		
-		System.out.println(filelengthindex.length);
-		
-		for(int i = 0; i < filelengthindex.length; i++) { 
-			
-			
-			
-			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
-			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
-			
-			JSONObject obj = new JSONObject(jsonstring);
-			
 			id.add(obj.getInt("id") + "");
-			
-
-			
-		}
-		
-	}
-	
-	public void IndexVerifiers() throws IOException {
-		
-		FetchData data = new FetchData();
-		
-		File filelength = new File("C:\\ExtremeDemonList\\levels");
-		File[] filelengthindex = filelength.listFiles();
-		
-		String jsonstring;
-		
-		localLength = filelengthindex.length;
-		
-		System.out.println(filelengthindex.length);
-		
-		for(int i = 0; i < filelengthindex.length; i++) { 
-			
-			
-			
-			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
-			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
-			
-			JSONObject obj = new JSONObject(jsonstring);
-			
 			verifier.add(obj.getString("verifier"));
-			
-
-			
-		}
-		
-		
-		
-	}
-	
-	public void IndexCreators() throws IOException {
-		
-		FetchData data = new FetchData();
-		
-		File filelength = new File("C:\\ExtremeDemonList\\levels");
-		File[] filelengthindex = filelength.listFiles();
-		
-		String jsonstring;
-		
-		localLength = filelengthindex.length;
-		
-		System.out.println(filelengthindex.length);
-		
-		for(int i = 0; i < filelengthindex.length; i++) { 
-			
-			
-			
-			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
-			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
-			
-			JSONObject obj = new JSONObject(jsonstring);
-			
 			creator.add(obj.getString("author"));
+			qualification.add(obj.getInt("percentToQualify") + "");
+			ytlink.add(obj.getString("verification") + "");
 			
-
 			
 		}
-		
-		
-		
-	}
-	
-	public void IndexQualification() throws IOException {
-		
-		FetchData data = new FetchData();
-		
-		File filelength = new File("C:\\ExtremeDemonList\\levels");
-		File[] filelengthindex = filelength.listFiles();
-		
-		String jsonstring;
-		
-		localLength = filelengthindex.length;
-		
-		System.out.println(filelengthindex.length);
-		
-		for(int i = 0; i < filelengthindex.length; i++) { 
-			
-			
-			
-			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
-			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
-			
-			JSONObject obj = new JSONObject(jsonstring);
-			
-			qualification.add(obj.getInt("percentToQualify") + "");
-		}	
-	}
-	
-	public ArrayList<String> IndexYoutubeLink() throws IOException {
-		FetchData data = new FetchData();
-		
-		File filelength = new File("C:\\ExtremeDemonList\\levels");
-		File[] filelengthindex = filelength.listFiles();
-		
-		String jsonstring;
-		
-		localLength = filelengthindex.length;
-		
-		System.out.println(filelengthindex.length);
-		
-		for(int i = 0; i < filelengthindex.length; i++) { 
-			
-			
-			
-			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
-			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
-			
-			JSONObject obj = new JSONObject(jsonstring);
-			
-			ytlink.add(obj.getString("verification") + "");
-		}	
-		
-		return ytlink;
-	}
+	}	
 	
 	public static ArrayList<String> allVictors(String levelname) throws IOException {
         ArrayList<String> completed = new ArrayList<>();
@@ -258,8 +112,5 @@ public class GuiData {
 
         return completed;
     }
-	
-
-	
 	
 }

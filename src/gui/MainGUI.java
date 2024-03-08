@@ -2,35 +2,25 @@ package gui;
 
 import java.awt.Button;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -70,6 +60,7 @@ public class MainGUI {
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschafft filtern");
 	public Button copyid = new Button("Level ID kopieren");
 	public Button showinfos = new Button("Mehr Infos anzeigen");
+	public JButton settings = new JButton("⚙");
 	GridLayout gridLayout = new GridLayout(3, 1);
 	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -79,12 +70,7 @@ public class MainGUI {
 	 
 	public void build() throws IOException {
 		GuiData data = new GuiData();
-		data.IndexLevelName();
-		data.IndexLevelID();
-		data.IndexVerifiers();
-		data.IndexCreators();
-		data.IndexQualification();
-		data.IndexYoutubeLink();
+		data.IndexData();
 		
 		gridLayout.setRows(data.getLocalLevels().size());
 			
@@ -118,6 +104,10 @@ public class MainGUI {
 		
 		qualify.setBounds(10, 170, 164, 30);
 		
+		settings.setBounds(1, 1, 60, 60);
+		settings.setFont(settings.getFont().deriveFont(30f));
+		settings.setBackground(Color.LIGHT_GRAY);
+		
 		victor.setBounds(1, 276, 164, 30);
 		records.getVerticalScrollBar().setUnitIncrement(16);
 		
@@ -140,7 +130,7 @@ public class MainGUI {
 	     
 	     verifier.setBounds(10, 110, 164, 30);
 	     
-	     search.setBounds(1, 1, 500, 60);
+	     search.setBounds(60, 1, 440, 60);
 	     
 	     show.setBounds(500, 1, 200, 60);
 	     
@@ -181,7 +171,7 @@ public class MainGUI {
 									try {
 										file.createNewFile();
 									} catch (IOException e1) {
-										// TODO Auto-generated catch block
+										
 										e1.printStackTrace();
 									}
 								}	
@@ -227,7 +217,7 @@ public class MainGUI {
 								try {
 									recordspanel.setLayout(new GridLayout(GuiData.allVictors(fetchData.allLevels().get(index)).size(), 1));
 								} catch (IOException e1) {
-									// TODO Auto-generated catch block
+									
 									e1.printStackTrace();
 								}
 								recordspanel.setBackground(Color.GRAY);
@@ -424,6 +414,7 @@ public class MainGUI {
 		main.add(progress);
 		main.add(filtercompleted);
 		main.add(show);
+		main.add(settings);
 		main.add(elements.infopanel());
 		main.setVisible(true);
 	}
