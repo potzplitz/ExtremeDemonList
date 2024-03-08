@@ -231,8 +231,7 @@ public class MainGUI {
 								recordspanel.removeAll();
 								
 								try {
-								     // Instanz der FetchData-Klasse erstellen
-								    ArrayList<String> victors = GuiData.allVictors(fetchData.allLevels().get(index)); // Methode allVictors aufrufen
+								    ArrayList<String> victors = GuiData.allVictors(fetchData.allLevels().get(index));
 								    
 								    victorcount.setText("Anzahl Victors: " + victors.size());
 								    
@@ -374,7 +373,7 @@ public class MainGUI {
 			        	                scroll.revalidate();
 			        	            }
 			        	        } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-			        	            levelpanel.add(contents, 0); // Füge das Element am Anfang hinzu
+			        	            levelpanel.add(contents, 0);
 			        	        }
 			        	        levelpanel.repaint();
 			        	        levelpanel.revalidate();
@@ -397,6 +396,17 @@ public class MainGUI {
 				}
 	        });
 	        thread.start();
+	        
+	        settings.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					SettingsGui gui = new SettingsGui();
+					gui.showSettings();
+					
+				}
+	        	
+	        });
 	    
 	    elements.infopanel().add(copyid);
 	    elements.infopanel().add(level, SwingConstants.CENTER);
