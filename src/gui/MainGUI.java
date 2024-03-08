@@ -67,6 +67,8 @@ public class MainGUI {
 	public JComboBox show = new JComboBox(showing);
 	private FetchData fetch = new FetchData();
 	private Elements elements = new Elements();
+	
+	private int completedcount = 0;
 	 
 	public void build() throws IOException {
 		GuiData data = new GuiData();
@@ -82,7 +84,7 @@ public class MainGUI {
 		level.setBounds(10, 10, 200, 30);
 		level.setFont(level.getFont().deriveFont(15f));
 
-		filtercompleted.setBounds(720, 15, 200, 30);
+		filtercompleted.setBounds(710, 15, 200, 30);
 		
 		progress.setBounds(200, 300, 500, 30);
 		progress.setStringPainted(true);
@@ -191,6 +193,7 @@ public class MainGUI {
 							contents.setBackground(Color.decode("#cbffbf"));
 							uncompleted.setVisible(true);
 							completed.setVisible(false);
+							completedcount++;
 						}
 			        	
 			        	contents.addMouseListener(new MouseListener() {
@@ -211,6 +214,7 @@ public class MainGUI {
 								idshow.setText("ID: " + data.getId().get(index));
 								qualify.setText("Qualifikation: " + data.getQualification().get(index) + "%");
 								level.setVerticalAlignment(SwingConstants.CENTER);
+								
 								
 								FetchData fetchData = new FetchData();
 								
@@ -235,7 +239,6 @@ public class MainGUI {
 								    recordspanel.setLayout(new GridLayout(victors.size(), 1));
 
 								    for(String victor : victors) {
-								        System.out.println(victor);
 								        JPanel contents = new JPanel();
 								        contents.setPreferredSize(new Dimension(165, 50));
 								        contents.setLayout(null);
@@ -283,6 +286,8 @@ public class MainGUI {
 			        	JLabel rank = new JLabel("#" + (i + 1));
 			        	rank.setBounds(10, 10, 40, 30);
 			        	rank.setName(i + "");
+			        	
+			        	filtercompleted.setText("nach Geschafft filtern (" + completedcount + ")");
 			        	
 			        	show.addActionListener(new ActionListener() {
 							@Override

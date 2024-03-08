@@ -71,9 +71,7 @@ public class GuiData {
 		String jsonstring;
 		
 		localLength = filelengthindex.length;
-		
-		System.out.println(filelengthindex.length);
-		
+
 		for(int i = 0; i < filelengthindex.length; i++) { 
 			
 			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
