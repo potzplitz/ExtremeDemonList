@@ -69,13 +69,7 @@ public class MainGUI {
 	 
 	public void build() throws IOException {
 		GuiData data = new GuiData();
-		data.IndexLevelName();
-		data.IndexLevelID();
-		data.IndexVerifiers();
-		data.IndexCreators();
-		data.IndexQualification();
-		data.IndexYoutubeLink();
-		
+		data.IndexData();	
 		gridLayout.setRows(data.getLocalLevels().size());
 			
 		main.setSize(900, 700);
