@@ -60,16 +60,20 @@ public class MainGUI {
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschafft filtern");
 	public Button copyid = new Button("Level ID kopieren");
 	public Button showinfos = new Button("Mehr Infos anzeigen");
+	public JButton settings = new JButton("⚙");
 	GridLayout gridLayout = new GridLayout(3, 1);
 	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JComboBox show = new JComboBox(showing);
 	private FetchData fetch = new FetchData();
 	private Elements elements = new Elements();
+	
+	private int completedcount = 0;
 	 
 	public void build() throws IOException {
 		GuiData data = new GuiData();
-		data.IndexData();	
+		data.IndexData();
+		
 		gridLayout.setRows(data.getLocalLevels().size());
 			
 		main.setSize(900, 700);
@@ -80,7 +84,7 @@ public class MainGUI {
 		level.setBounds(10, 10, 200, 30);
 		level.setFont(level.getFont().deriveFont(15f));
 
-		filtercompleted.setBounds(720, 15, 200, 30);
+		filtercompleted.setBounds(710, 15, 200, 30);
 		
 		progress.setBounds(200, 300, 500, 30);
 		progress.setStringPainted(true);
@@ -101,6 +105,10 @@ public class MainGUI {
 		copyid.setBounds(10, 50, 164, 30);
 		
 		qualify.setBounds(10, 170, 164, 30);
+		
+		settings.setBounds(1, 1, 60, 60);
+		settings.setFont(settings.getFont().deriveFont(30f));
+		settings.setBackground(Color.LIGHT_GRAY);
 		
 		victor.setBounds(1, 276, 164, 30);
 		records.getVerticalScrollBar().setUnitIncrement(16);
@@ -124,13 +132,11 @@ public class MainGUI {
 	     
 	     verifier.setBounds(10, 110, 164, 30);
 	     
-	     search.setBounds(1, 1, 500, 60);
+	     search.setBounds(60, 1, 440, 60);
 	     
 	     show.setBounds(500, 1, 200, 60);
 	     
 	     recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-	     
-	    
 	        
 	        Thread thread = new Thread(new Runnable() {
 				@Override
@@ -167,6 +173,7 @@ public class MainGUI {
 									try {
 										file.createNewFile();
 									} catch (IOException e1) {
+										
 										e1.printStackTrace();
 									}
 								}	
@@ -186,6 +193,7 @@ public class MainGUI {
 							contents.setBackground(Color.decode("#cbffbf"));
 							uncompleted.setVisible(true);
 							completed.setVisible(false);
+							completedcount++;
 						}
 			        	
 			        	contents.addMouseListener(new MouseListener() {
@@ -207,11 +215,13 @@ public class MainGUI {
 								qualify.setText("Qualifikation: " + data.getQualification().get(index) + "%");
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
+								
 								FetchData fetchData = new FetchData();
 								
 								try {
 									recordspanel.setLayout(new GridLayout(GuiData.allVictors(fetchData.allLevels().get(index)).size(), 1));
 								} catch (IOException e1) {
+									
 									e1.printStackTrace();
 								}
 								recordspanel.setBackground(Color.GRAY);
@@ -221,15 +231,13 @@ public class MainGUI {
 								recordspanel.removeAll();
 								
 								try {
-								     // Instanz der FetchData-Klasse erstellen
-								    ArrayList<String> victors = GuiData.allVictors(fetchData.allLevels().get(index)); // Methode allVictors aufrufen
+								    ArrayList<String> victors = GuiData.allVictors(fetchData.allLevels().get(index));
 								    
 								    victorcount.setText("Anzahl Victors: " + victors.size());
 								    
 								    recordspanel.setLayout(new GridLayout(victors.size(), 1));
 
 								    for(String victor : victors) {
-								        System.out.println(victor);
 								        JPanel contents = new JPanel();
 								        contents.setPreferredSize(new Dimension(165, 50));
 								        contents.setLayout(null);
@@ -277,6 +285,8 @@ public class MainGUI {
 			        	JLabel rank = new JLabel("#" + (i + 1));
 			        	rank.setBounds(10, 10, 40, 30);
 			        	rank.setName(i + "");
+			        	
+			        	filtercompleted.setText("nach Geschafft filtern (" + completedcount + ")");
 			        	
 			        	show.addActionListener(new ActionListener() {
 							@Override
@@ -363,7 +373,7 @@ public class MainGUI {
 			        	                scroll.revalidate();
 			        	            }
 			        	        } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-			        	            levelpanel.add(contents, 0); // Füge das Element am Anfang hinzu
+			        	            levelpanel.add(contents, 0);
 			        	        }
 			        	        levelpanel.repaint();
 			        	        levelpanel.revalidate();
@@ -386,6 +396,17 @@ public class MainGUI {
 				}
 	        });
 	        thread.start();
+	        
+	        settings.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					SettingsGui gui = new SettingsGui();
+					gui.showSettings();
+					
+				}
+	        	
+	        });
 	    
 	    elements.infopanel().add(copyid);
 	    elements.infopanel().add(level, SwingConstants.CENTER);
@@ -408,6 +429,7 @@ public class MainGUI {
 		main.add(progress);
 		main.add(filtercompleted);
 		main.add(show);
+		main.add(settings);
 		main.add(elements.infopanel());
 		main.setVisible(true);
 	}
