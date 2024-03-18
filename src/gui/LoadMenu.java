@@ -25,7 +25,6 @@ public class LoadMenu {
 		load.setBounds(1, 178, 398, 20);
 	
 		
-		
 		loadwindow.setSize(400, 200);
 		loadwindow.setUndecorated(true);
 		loadwindow.setResizable(false);
