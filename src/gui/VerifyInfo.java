@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Button;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -10,12 +11,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import api.GetApiData;
+
 public class VerifyInfo {
     
     private static VerifyInfo instance = null;
     
     private JFrame frame;
     private JLabel ytthumbnail;
+    private Button playsong;
     
     private VerifyInfo() {
         frame = new JFrame("Verifikationsinfos");
@@ -34,7 +38,7 @@ public class VerifyInfo {
         return instance;
     }
     
-    public void showInfo(String url) {
+    public void showInfo(String url, int id) {
         frame.getContentPane().removeAll(); // Clear previous content
         
         ytthumbnail.setBounds(90, 70, 200, 110);
@@ -70,5 +74,10 @@ public class VerifyInfo {
         
         frame.add(ytthumbnail);
         frame.setVisible(true);
+        
+        GetApiData data = new GetApiData();
+		
+		System.out.println(data.getGDSongID(id));
+        
     }
 }

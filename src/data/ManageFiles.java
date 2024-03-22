@@ -28,7 +28,6 @@ public class ManageFiles {
 		fetch.getGithubString();
 		
 		
-		
 		for(int i = 0; i < fetch.allLevels().size(); i++) {
 			
 			File file = new File("C:\\ExtremeDemonList\\levels\\" + fetch.allLevels().get(i) + ".json");

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.swing.UnsupportedLookAndFeelException;
 
+import api.GetApiData;
 import data.FetchData;
 import data.ManageFiles;
 import filestructure.CreateFileStructure;
@@ -29,7 +30,7 @@ public class Main {
 		load.updateBar("Liste wird auf Updates geprüft...");
 		
 		ManageFiles manager = new ManageFiles();
-		manager.compareArrays();
+		manager.compareArrays();	
 
 		load.updateBar("Ladevorgang abgeschlossen");
 		load.close();
