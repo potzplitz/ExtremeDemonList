@@ -31,7 +31,7 @@ public class VerifyInfo {
     private VerifyInfo() {
         frame = new JFrame("Mehr Infos");
         ytthumbnail = new JLabel();
-        playsong = new Button("Song abspielen");
+        playsong = new Button("Songpreview abspielen");
         
         playsong.setBounds(90, 200, 200 ,30);
         
