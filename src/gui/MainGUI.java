@@ -204,7 +204,7 @@ public class MainGUI {
 								    public void actionPerformed(ActionEvent e) {
 								        String url = data.getYoutubeLink().get(index);
 								        VerifyInfo ver = VerifyInfo.getInstance();
-								        ver.showInfo(url);
+								        ver.showInfo(url, Integer.parseInt(data.getId().get(index)));
 								    }
 								});
 

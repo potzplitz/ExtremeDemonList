@@ -25,10 +25,6 @@ public class GuiData {
 	
 	private FetchData data = new FetchData();
 
-	public void setId(ArrayList<String> id) {
-		this.id = id;
-	}
-
 	private int localLength;
 	
 	public int getLocalLength() {
