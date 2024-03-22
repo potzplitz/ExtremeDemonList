@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Button;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -12,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import api.GetApiData;
+import media.PlaySong;
 
 public class VerifyInfo {
     
@@ -20,15 +23,36 @@ public class VerifyInfo {
     private JFrame frame;
     private JLabel ytthumbnail;
     private Button playsong;
+    private int currentSongId; // Instanzvariable für die ID
+    
+    private PlaySong player;
+    private GetApiData data;
     
     private VerifyInfo() {
-        frame = new JFrame("Verifikationsinfos");
+        frame = new JFrame("Mehr Infos");
         ytthumbnail = new JLabel();
+        playsong = new Button("Song abspielen");
+        
+        playsong.setBounds(90, 200, 200 ,30);
         
         frame.setSize(400, 300);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(null);
+        
+        player = new PlaySong();
+        data = new GetApiData();
+        
+        playsong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                playSongAction();	
+            } 	
+        });
+    }
+    
+    private void playSongAction() {
+        player.play(data.getSongURL(currentSongId), data.getSongID(currentSongId)); // Verwende die Instanzvariable für die ID
     }
     
     public static VerifyInfo getInstance() {
@@ -42,6 +66,7 @@ public class VerifyInfo {
         frame.getContentPane().removeAll(); // Clear previous content
         
         ytthumbnail.setBounds(90, 70, 200, 110);
+        currentSongId = id; // Setze die Instanzvariable auf die aktuelle ID
         
         if (url != null && url.contains("v=")) {
             int startIndex = url.indexOf("v=") + 2;
@@ -73,11 +98,7 @@ public class VerifyInfo {
         }
         
         frame.add(ytthumbnail);
+        frame.add(playsong);
         frame.setVisible(true);
-        
-        GetApiData data = new GetApiData();
-		
-		System.out.println(data.getGDSongID(id));
-        
     }
 }

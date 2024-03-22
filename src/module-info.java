@@ -12,4 +12,5 @@
 		requires com.formdev.flatlaf;
 		requires jdash.client;
 		requires jdash.common;
+		requires jlayer;
 	}
