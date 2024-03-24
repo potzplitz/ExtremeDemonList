@@ -7,6 +7,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import api.GetApiData;
 import data.FetchData;
 import data.ManageFiles;
+import database.DatabaseManager;
 import filestructure.CreateFileStructure;
 import gui.LoadMenu;
 
@@ -27,10 +28,15 @@ public class Main {
 		FetchData fetch = new FetchData();
 		fetch.getGithubString();
 		
-		load.updateBar("Liste wird auf Updates geprüft...");
+		load.updateBar("Einträge werden Indexiert...");
 		
 		ManageFiles manager = new ManageFiles();
-		manager.compareArrays();	
+		manager.compareArrays();
+		
+		load.updateBar("Datenbank wird geladen...");
+		
+		DatabaseManager data = new DatabaseManager();
+		data.manage();
 
 		load.updateBar("Ladevorgang abgeschlossen");
 		load.close();

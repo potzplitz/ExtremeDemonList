@@ -32,13 +32,13 @@ public class PlaySong {
     }
     
     private void playSong(String path) {
-    	String filePath = path; // Passe den Pfad zu deiner MP3-Datei an
+    	String filePath = path; 
 
     	try {
             FileInputStream fis = new FileInputStream(filePath);
             AdvancedPlayer player = new AdvancedPlayer(fis);
 
-            // Starte das Abspielen in einem neuen Thread, damit der Hauptthread nicht blockiert wird
+
             Thread playerThread = new Thread(() -> {
                 try {
                     player.play();
@@ -49,16 +49,15 @@ public class PlaySong {
 
             playerThread.start();
 
-            // Gib dem Player Zeit, die MP3-Datei abzuspielen
-            Thread.sleep(10000); // Zum Beispiel 10 Sekunden abwarten
 
-            // Beende den Player und schließe die FileInputStream
+            Thread.sleep(10000); 
+
+
             player.close();
             fis.close();
-        } catch (FileNotFoundException | JavaLayerException | InterruptedException e) {
+        } catch (IOException | JavaLayerException | InterruptedException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 

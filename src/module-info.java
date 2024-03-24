@@ -13,4 +13,5 @@
 		requires jdash.client;
 		requires jdash.common;
 		requires jlayer;
+		requires java.sql;
 	}
