@@ -6,14 +6,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import api.GetApiData;
 import data.FetchData;
+import data.GuiData_Deprecated;
 import data.ManageFiles;
 import database.DatabaseManager;
 import filestructure.CreateFileStructure;
 import gui.LoadMenu;
+import settingsfunctions.LoadSettings;
 
 public class Main {
 	
-	public static void main(String[] args) throws IOException, UnsupportedLookAndFeelException { 
+	public static void main(String[] args) throws IOException { 
 
 		LoadMenu load = new LoadMenu();
 		load.onLoad();
@@ -23,6 +25,11 @@ public class Main {
 		CreateFileStructure struct = new CreateFileStructure();
 		struct.create();
 		
+		load.updateBar("Konfigurationsdatei wird gelesen...");
+		
+		LoadSettings settings = new LoadSettings();
+		settings.load();
+		
 		load.updateBar("Updatedaten werden heruntergeladen...");
 		
 		FetchData fetch = new FetchData();
@@ -31,9 +38,9 @@ public class Main {
 		load.updateBar("Einträge werden Indexiert...");
 		
 		ManageFiles manager = new ManageFiles();
-		manager.compareArrays();
+		manager.compareArrays(settings.isOldsystem());
 		
-		load.updateBar("Datenbank wird geladen...");
+		load.updateBar("Datenbank wird gestartet...");
 		
 		DatabaseManager data = new DatabaseManager();
 		data.manage();
