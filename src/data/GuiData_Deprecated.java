@@ -3,16 +3,19 @@ package data;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import database.DatabaseManager;
-import database.Sqlite;
 
-public class GuiData {
+public class GuiData_Deprecated {
 	
 	private ArrayList<String> localLevels = new ArrayList<String>();
 	private ArrayList<String> qualification = new ArrayList<String>();
@@ -64,11 +67,14 @@ public class GuiData {
 		return victors;
 	}
 	
-	public void IndexData(ArrayList<String> migrate) throws IOException {
+	
+
+	public void IndexData() throws IOException {
+		
 		DatabaseManager mgr = new DatabaseManager();
 		mgr.queryData("levels");
 		
-		Sqlite sql = new Sqlite("levels");
+		
 		
 		FetchData data = new FetchData();
 		
@@ -78,10 +84,10 @@ public class GuiData {
 		String jsonstring;
 		
 		localLength = filelengthindex.length;
-		
-		for(int i = 0; i < migrate.size(); i++) { 
+
+		for(int i = 0; i < filelengthindex.length; i++) { 
 			
-			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + migrate.get(i)), StandardCharsets.UTF_8);
+			jsonstring = FileUtils.readFileToString(new File("C:\\ExtremeDemonList\\levels\\" + data.allLevels().get(i) + ".json"), StandardCharsets.UTF_8);
 			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
 			
 			JSONObject obj = new JSONObject(jsonstring);
@@ -98,7 +104,26 @@ public class GuiData {
 			
 			
 		}
-		
-	}
+	}	
+	
+	public static ArrayList<String> allVictors(String levelname) throws IOException {
+        ArrayList<String> completed = new ArrayList<>();
+
+        // JSON-Datei einlesen
+        String jsonContent = new String(Files.readAllBytes(Paths.get("C:\\ExtremeDemonList\\levels\\" + levelname + ".json")));
+        JSONObject jsonObject = new JSONObject(jsonContent);
+
+        // Victors extrahieren
+        JSONArray recordsArray = jsonObject.getJSONArray("records");
+        for (int i = 0; i < recordsArray.length(); i++) {
+            JSONObject record = recordsArray.getJSONObject(i);
+            int percent = record.getInt("percent");
+            if (percent == 100) {
+                completed.add(record.getString("user"));
+            }
+        }
+
+        return completed;
+    }
 	
 }

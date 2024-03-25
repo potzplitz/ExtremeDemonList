@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import data.DownloadLevels;
+import settingsfunctions.LoadSettings;
 
 public class MissingLevels {
 	
@@ -51,6 +52,14 @@ public class MissingLevels {
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setBounds(1, 60, 383, 201);
         
+        LoadSettings settings = new LoadSettings();
+        try {
+			settings.load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         
         
         for(int i = 0; i < missinglevels.size(); i++) {
@@ -75,13 +84,24 @@ public class MissingLevels {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				main.dispose();
-				MainGUI gui = new MainGUI();
-				try {
-					gui.build();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
+				if(settings.isOldsystem()) {
+            		MainGUI gui = new MainGUI();
+            		try {
+						gui.build();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+            	} else {
+            		MainGUI_Deprecated gui = new MainGUI_Deprecated();
+            		try {
+    					gui.build();
+    				} catch (IOException e1) {
+    					// TODO Auto-generated catch block
+    					e1.printStackTrace();
+    				}
+            	}
 			}
         });
         

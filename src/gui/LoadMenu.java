@@ -19,7 +19,7 @@ public class LoadMenu {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		load.setMinimum(0);
-		load.setMaximum(4);
+		load.setMaximum(6);
 		
 		
 		load.setBounds(1, 178, 398, 20);
@@ -58,6 +58,7 @@ public class LoadMenu {
 		index++;
 		load.setValue(index);
 		loading.setText(state);
+		System.out.println(state);
 	}
 	
 	public void close() {

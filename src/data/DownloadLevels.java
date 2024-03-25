@@ -13,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import gui.MainGUI;
+import gui.MainGUI_Deprecated;
+import settingsfunctions.LoadSettings;
 
 public class DownloadLevels {
 	
@@ -49,6 +51,9 @@ public class DownloadLevels {
         main.add(scroll);
         main.add(bar);
         main.setVisible(true);
+        
+        LoadSettings settings = new LoadSettings();
+        settings.load();
 		
         
         
@@ -84,16 +89,32 @@ public class DownloadLevels {
         	        }
         			area.append(" >> ERFOLGREICH \n");
         		}
+            	
+            	
+            	
             	JOptionPane.showMessageDialog(null, "Alle " + ManageFiles.getMissinglevels().size() + " Level wurden erfolgreich heruntergeladen.", "Download abgeschlossen", JOptionPane.INFORMATION_MESSAGE);
             	main.dispose();
             	
-            	MainGUI gui = new MainGUI();
-    			try {
-					gui.build();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+            	if(settings.isOldsystem()) {
+            		MainGUI gui = new MainGUI();
+            		try {
+						gui.build();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	} else {
+            		MainGUI_Deprecated gui = new MainGUI_Deprecated();
+            		try {
+    					gui.build();
+    				} catch (IOException e) {
+    					// TODO Auto-generated catch block
+    					e.printStackTrace();
+    				}
+            	}
+            	
+            	
+    			
             	
             }
             

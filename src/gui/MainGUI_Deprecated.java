@@ -37,7 +37,7 @@ import data.GuiData_Deprecated;
 import database.Sqlite;
 import settingsfunctions.LoadSettings;
 
-public class MainGUI {
+public class MainGUI_Deprecated {
 	
 	public JFrame main = new JFrame("Extreme Demon List");
 	public JProgressBar progress = new JProgressBar();
@@ -74,11 +74,14 @@ public class MainGUI {
 	 
 	public void build() throws IOException {
 		LoadSettings load = new LoadSettings();
-
-		Sqlite data = new Sqlite("levels");
-		data.queryData("levels");
 		
-		gridLayout.setRows(data.getLevelname().size());
+		
+		GuiData_Deprecated data = new GuiData_Deprecated();
+		data.IndexData();
+		
+		//Sqlite data = new Sqlite("levels");
+		
+		gridLayout.setRows(data.getLocalLevels().size());
 			
 		main.setSize(900, 700);
 		main.setLayout(null);
@@ -92,7 +95,7 @@ public class MainGUI {
 		
 		progress.setBounds(200, 300, 500, 30);
 		progress.setStringPainted(true);
-		progress.setMaximum(data.getLevelname().size());
+		progress.setMaximum(data.getLocalLength());
 			
 		info.setBounds(380, 270, 300, 30);
 	
@@ -145,15 +148,14 @@ public class MainGUI {
 	        Thread thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					System.out.println(data.getLevelname().size() + " ======== size");
-					for(int i = 0; i < data.getLevelname().size(); i++) {
+					for(int i = 0; i < data.getLocalLevels().size(); i++) {
 						 final int index = i;
 						progress.setValue(i + 1);
 						
-						currentLevel.setText(data.getLevelname().get(i));
+						currentLevel.setText(data.getLocalLevels().get(i));
 						
 			        	JPanel contents = new JPanel();
-			        	contents.setName(data.getLevelname().get(i));
+			        	contents.setName(data.getLocalLevels().get(i));
 			        	contents.setPreferredSize(new Dimension(600, 50));
 			        	contents.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			        	contents.setLayout(null);
@@ -207,17 +209,17 @@ public class MainGUI {
 								showinfos.addActionListener(new ActionListener() {
 								    @Override
 								    public void actionPerformed(ActionEvent e) {
-								        String url = data.getVerificationLink().get(index);
+								        String url = data.getYoutubeLink().get(index);
 								        VerifyInfo ver = VerifyInfo.getInstance();
-								        ver.showInfo(url, Integer.parseInt(data.getLevelID().get(index)));
+								        ver.showInfo(url, Integer.parseInt(data.getId().get(index)));
 								    }
 								});
 
-								level.setText(data.getLevelname().get(index));
+								level.setText(data.getLocalLevels().get(index));
 								verifier.setText("Verifier: " + data.getVerifier().get(index));
-								creator.setText("Creator: " + data.getAuthor().get(index));
-								idshow.setText("ID: " + data.getLevelID().get(index));
-								qualify.setText("Qualifikation: " + data.getPercenttoqualify().get(index) + "%");
+								creator.setText("Creator: " + data.getCreator().get(index));
+								idshow.setText("ID: " + data.getId().get(index));
+								qualify.setText("Qualifikation: " + data.getQualification().get(index) + "%");
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
 								
@@ -264,7 +266,7 @@ public class MainGUI {
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										
-										StringSelection stringSelection = new StringSelection(data.getLevelID().get(index));
+										StringSelection stringSelection = new StringSelection(data.getId().get(index));
 										Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 										clipboard.setContents(stringSelection, null);				
 									}
@@ -337,7 +339,7 @@ public class MainGUI {
 			        	});
 	
 			        	levelname = new JLabel();
-			        	levelname.setText(data.getLevelname().get(i));
+			        	levelname.setText(data.getLocalLevels().get(i));
 			        	levelname.setBounds(290, 10, 300, 30);
 			        	
 			        	search.addKeyListener(new KeyListener() {
@@ -373,7 +375,7 @@ public class MainGUI {
 			        	        if (e.getStateChange() == ItemEvent.SELECTED) {
 			        	            if (!contents.getBackground().equals(Color.decode("#cbffbf"))) {
 			        	                levelpanel.remove(contents);
-			        	                gridLayout.setRows(data.getLevelname().size());
+			        	                gridLayout.setRows(data.getLocalLength());
 			        	                scroll.repaint();
 			        	                scroll.revalidate();
 			        	            }
