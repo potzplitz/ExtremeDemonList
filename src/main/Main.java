@@ -6,7 +6,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import api.GetApiData;
 import data.FetchData;
-import data.GuiData_Deprecated;
 import data.ManageFiles;
 import database.DatabaseManager;
 import filestructure.CreateFileStructure;

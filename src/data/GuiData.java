@@ -90,7 +90,7 @@ public class GuiData {
 			localLevels.add(obj.getString("name"));
 			id.add(obj.getInt("id") + "");
 			verifier.add(obj.getString("verifier"));
-			creator.add(obj.getString("author"));
+			creator.add(obj.getString("author")); 
 			qualification.add(obj.getInt("percentToQualify") + "");
 			ytlink.add(obj.getString("verification") + "");
 			creators.add(obj.getJSONArray("creators") + "");

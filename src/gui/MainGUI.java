@@ -33,7 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import data.FetchData;
-import data.GuiData_Deprecated;
+import data.GuiData;
 import database.Sqlite;
 import settingsfunctions.LoadSettings;
 
@@ -166,7 +166,7 @@ public class MainGUI {
 			        	uncompleted.setBounds(640, 17, 17, 17);
 			        	uncompleted.setMargin(new Insets(0,0,0,0));
         	
-			        	File file = new File("C:\\ExtremeDemonList\\completed\\" + fetch.allLevels().get(i)+ ".json");
+			        
 
 			        	completed.addActionListener(new ActionListener() {
 							@Override
@@ -175,12 +175,7 @@ public class MainGUI {
 									completed.setVisible(false);
 									uncompleted.setVisible(true);
 									
-									try {
-										file.createNewFile();
-									} catch (IOException e1) {
-										
-										e1.printStackTrace();
-									}
+									data.modifyData(data.getLevelname().get(index), true);
 								}	
 			        		});
 			        	
@@ -190,11 +185,11 @@ public class MainGUI {
 									contents.setBackground(Color.WHITE);		
 									uncompleted.setVisible(false);
 									completed.setVisible(true);		
-									file.delete();
+									data.modifyData(data.getLevelname().get(index), false);
 							}        		
 			        	});
 			        	
-						if(new File("C:\\ExtremeDemonList\\completed\\" + fetch.allLevels().get(i)+ ".json").exists()) {
+						if(Boolean.parseBoolean(data.getCompleted().get(index))) {
 							contents.setBackground(Color.decode("#cbffbf"));
 							uncompleted.setVisible(true);
 							completed.setVisible(false);
@@ -222,9 +217,9 @@ public class MainGUI {
 								
 								
 								FetchData fetchData = new FetchData();
-								
+								/*
 								try {
-									recordspanel.setLayout(new GridLayout(GuiData_Deprecated.allVictors(fetchData.allLevels().get(index)).size(), 1));
+									//TODO: recordspanel.setLayout(new GridLayout(GuiData.allVictors(fetchData.allLevels().get(index)).size(), 1));
 								} catch (IOException e1) {
 									
 									e1.printStackTrace();
@@ -236,7 +231,7 @@ public class MainGUI {
 								recordspanel.removeAll();
 								
 								try {
-								    ArrayList<String> victors = GuiData_Deprecated.allVictors(fetchData.allLevels().get(index));
+								  TODO:   ArrayList<String> victors = GuiData.allVictors(fetchData.allLevels().get(index));
 								    
 								    victorcount.setText("Anzahl Victors: " + victors.size());
 								    
@@ -259,6 +254,8 @@ public class MainGUI {
 								}
 
 								recordspanel.revalidate();
+								
+								*/
 								
 								copyid.addActionListener(new ActionListener() {
 									@Override

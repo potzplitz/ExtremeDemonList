@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import data.FetchData;
 import data.GuiData;
-import data.GuiData_Deprecated;
 import gui.MainGUI;
-import gui.MainGUI_Deprecated;
 import settingsfunctions.LoadSettings;
 
 public class DatabaseManager {
@@ -19,12 +18,9 @@ public class DatabaseManager {
 	public void manage() {
 		Sqlite createLevelDB = new Sqlite("levels");
 		if(createLevelDB.exists()) {
-			System.out.println(true);
 		} else {
-			System.out.println(false);
-			createLevelDB.createNewDatabase();
+			createLevelDB.createNewDatabase("levels");
 		}
-		
 		createLevelDB.createNewTable("levels");
 	}
 	
@@ -50,7 +46,6 @@ public class DatabaseManager {
 		}
 		
 		for(int i = 0; i < fetch.allLevels().size(); i++) {
-			System.out.println(fetch.allLevels().get(i));
 			if(rawLevels.indexOf(fetch.allLevels().get(i) + ".json") != -1) {
 				levels.add(rawLevels.get(rawLevels.indexOf(fetch.allLevels().get(i) + ".json")));	
 			}
@@ -58,30 +53,32 @@ public class DatabaseManager {
 		}
 		
 		GuiData data = new GuiData();
+	
 		try {
 			data.IndexData(levels);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			fetch.getGithubString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
 		
+		try {
+			fetch.getGithubString();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
+		System.out.println(data.getLocalLevels().size() + "  ====== lovallevelsize");
 		
 		for (int i = 0; i < data.getLocalLevels().size(); i++) {
 			
-			System.out.println(levels.get(i) + " hat den index " +  levels.indexOf(levels.get(i)));
-			
+			System.out.println(data.getLocalLevels().get(i));
+
 			database.insertData(
 				    "levels", // Tabellenname
 				    fetch.allLevels().indexOf(levels.get(i).replace(".json", "")) + 1,
 				    data.getLocalLevels().get(i), // Level-Name
-				    fetch.allLevels().get(i), // Level-Name-Raw (oder entsprechender Wert aus fetch.allLevels())
+				    levels.get(i).replace(".json", ""), // Level-Name-Raw (oder entsprechender Wert aus fetch.allLevels())
 				    Integer.parseInt(data.getId().get(i)), // ID
 				    data.getCreator().get(i), // Ersteller
 				    data.getCreators().get(i), // Ersteller
@@ -91,10 +88,13 @@ public class DatabaseManager {
 				    data.getVictors().get(i), // Sieger
 				    false
 				);
-
 		}
 		
-		database.sortData("levels");
+		try {
+			database.sortData("levels");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
