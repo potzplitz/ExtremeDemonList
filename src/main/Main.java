@@ -6,11 +6,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import api.GetApiData;
 import data.FetchData;
-import data.GuiData_Deprecated;
 import data.ManageFiles;
 import database.DatabaseManager;
 import filestructure.CreateFileStructure;
 import gui.LoadMenu;
+import preload.PreChecks;
 import settingsfunctions.LoadSettings;
 
 public class Main {
@@ -34,6 +34,11 @@ public class Main {
 		
 		FetchData fetch = new FetchData();
 		fetch.getGithubString();
+		
+		load.updateBar("Daten werden überprüft...");
+		
+		PreChecks check = new PreChecks();
+		check.check();
 		
 		load.updateBar("Einträge werden Indexiert...");
 		

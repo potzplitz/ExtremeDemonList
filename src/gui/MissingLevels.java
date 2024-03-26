@@ -85,7 +85,7 @@ public class MissingLevels {
 			public void actionPerformed(ActionEvent e) {
 				main.dispose();
 				
-				if(settings.isOldsystem()) {
+				
             		MainGUI gui = new MainGUI();
             		try {
 						gui.build();
@@ -93,15 +93,7 @@ public class MissingLevels {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-            	} else {
-            		MainGUI_Deprecated gui = new MainGUI_Deprecated();
-            		try {
-    					gui.build();
-    				} catch (IOException e1) {
-    					// TODO Auto-generated catch block
-    					e1.printStackTrace();
-    				}
-            	}
+            	
 			}
         });
         
