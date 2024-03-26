@@ -76,6 +76,7 @@ public class DatabaseManager {
 
 			database.insertData(
 				    "levels", // Tabellenname
+				    data.getAttempts().get(i),
 				    fetch.allLevels().indexOf(levels.get(i).replace(".json", "")) + 1,
 				    data.getLocalLevels().get(i), // Level-Name
 				    levels.get(i).replace(".json", ""), // Level-Name-Raw (oder entsprechender Wert aus fetch.allLevels())

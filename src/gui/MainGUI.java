@@ -71,6 +71,7 @@ public class MainGUI {
 	private Elements elements = new Elements();
 	
 	private int completedcount = 0;
+	
 	 
 	public void build() throws IOException {
 		LoadSettings load = new LoadSettings();
@@ -141,12 +142,15 @@ public class MainGUI {
 	     show.setBounds(500, 1, 200, 60);
 	     
 	     recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	     
+	      
 	        
 	        Thread thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					System.out.println(data.getLevelname().size() + " ======== size");
+					boolean[] comp = new boolean[data.getLevelname().size()];
 					for(int i = 0; i < data.getLevelname().size(); i++) {
+						 
 						 final int index = i;
 						progress.setValue(i + 1);
 						
@@ -159,41 +163,106 @@ public class MainGUI {
 			        	contents.setLayout(null);
 	
 			        	JButton completed = new JButton("x");
-			        	completed.setBounds(640, 17, 17, 17);
+			        	completed.setBounds(610, 17, 17, 17);
 			        	completed.setMargin(new Insets(0,0,0,0));
+			        	completed.setVisible(false);
 			        	
 			        	JButton uncompleted = new JButton("\u2713");
-			        	uncompleted.setBounds(640, 17, 17, 17);
+			        	uncompleted.setBounds(610, 17, 17, 17);
 			        	uncompleted.setMargin(new Insets(0,0,0,0));
-        	
-			        
-
+			        	uncompleted.setVisible(false);
+			        	
+			        	JTextField attempts = new JTextField("0");
+			        	attempts.setBounds(535, 17, 70, 18);
+			        	attempts.setVisible(false);
+			        	
+			        	if(data.getAttempts().get(i) != null) {
+			        		attempts.setText(data.getAttempts().get(i) + "");
+			        	}
+			        	
+			        	JButton confirm = new JButton("\uD83D\uDDAB");
+			        	confirm.setBounds(640, 17, 17, 17);
+			        	confirm.setMargin(new Insets(0, 0, 0, 0));
+			        	
+			        	JButton anpassen = new JButton("⚙");
+			        	anpassen.setBounds(640, 17, 17, 17);
+			        	anpassen.setMargin(new Insets(0, 0, 0, 0));
+			        	
+			        	
+			        	
 			        	completed.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-									contents.setBackground(Color.decode("#cbffbf"));	
+									
 									completed.setVisible(false);
 									uncompleted.setVisible(true);
+									comp[index] = true;
 									
-									data.modifyData(data.getLevelname().get(index), true);
 								}	
 			        		});
 			        	
 			        	uncompleted.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-									contents.setBackground(Color.WHITE);		
+											
 									uncompleted.setVisible(false);
 									completed.setVisible(true);		
-									data.modifyData(data.getLevelname().get(index), false);
+									comp[index] = false;
 							}        		
 			        	});
 			        	
+			        	anpassen.addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								anpassen.setVisible(false);
+								confirm.setVisible(true);
+								attempts.setVisible(true);
+								if(Boolean.parseBoolean(data.getCompleted().get(index))) {
+									uncompleted.setVisible(true);
+									completed.setVisible(false);
+								
+								} else {
+									uncompleted.setVisible(false);
+									completed.setVisible(true);
+								}	
+								
+							}
+			        	});
+			        	
+			        	
+			        	confirm.addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()));
+								
+								if(!comp[index]) {
+									contents.setBackground(Color.WHITE);
+								} else {
+									contents.setBackground(Color.decode("#cbffbf"));	
+								}
+								
+								anpassen.setVisible(true);
+								confirm.setVisible(false);
+								uncompleted.setVisible(false);
+								completed.setVisible(false);		
+								attempts.setVisible(false);
+							}
+			        		
+			        	});
+			        	
+			        
+
+			        	
+			        	
 						if(Boolean.parseBoolean(data.getCompleted().get(index))) {
 							contents.setBackground(Color.decode("#cbffbf"));
-							uncompleted.setVisible(true);
-							completed.setVisible(false);
+							comp[index] = true;
 							completedcount++;
+						} else {
+							comp[index] = false;
 						}
 			        	
 			        	contents.addMouseListener(new MouseListener() {
@@ -386,6 +455,9 @@ public class MainGUI {
 			        	contents.add(rank);
 			        	contents.add(completed);
 			        	contents.add(uncompleted);
+			        	contents.add(anpassen);
+			        	contents.add(confirm);
+			        	contents.add(attempts);
 			        	levelpanel.add(contents);
 			        	
 			        }

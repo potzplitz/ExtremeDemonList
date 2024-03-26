@@ -22,6 +22,7 @@ public class GuiData {
 	private ArrayList<String> ytlink = new ArrayList<String>();
 	private ArrayList<String> creators = new ArrayList<String>();
 	private ArrayList<String> victors = new ArrayList<String>();
+	private ArrayList<Integer> attempts = new ArrayList<Integer>();
 	public ArrayList<String> completed = new ArrayList<String>();
 	
 	private FetchData data = new FetchData();
@@ -60,6 +61,10 @@ public class GuiData {
 		return creators;
 	}
 	
+	public ArrayList<Integer> getAttempts() {
+		return attempts;
+	}
+	
 	public ArrayList<String> getVictors() {
 		return victors;
 	}
@@ -95,6 +100,7 @@ public class GuiData {
 			ytlink.add(obj.getString("verification") + "");
 			creators.add(obj.getJSONArray("creators") + "");
 			victors.add(obj.getJSONArray("records") + "");
+			attempts.add(0);
 			
 			
 		}

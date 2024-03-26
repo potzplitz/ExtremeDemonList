@@ -28,6 +28,7 @@ public class Sqlite {
 	private ArrayList<String> records = new ArrayList<String>();
 	private ArrayList<String> completed = new ArrayList<String>();
 	private ArrayList<String> rawLevelNames = new ArrayList<String>();
+	private ArrayList<Integer> attempts = new ArrayList<Integer>();
 
 	
 	public ArrayList<String> getLevelname() {
@@ -68,6 +69,10 @@ public class Sqlite {
 
 	public ArrayList<String> getRawLevelNames() {
 		return rawLevelNames;
+	}
+	
+	public ArrayList<Integer> getAttempts() {
+		return attempts;
 	}
 
 	public Sqlite(String dbname) { // setzt variablen
@@ -112,6 +117,7 @@ public class Sqlite {
 	            + "    verificationLink TEXT NOT NULL,\n"
 	            + "    percentToQualify INTEGER NOT NULL,\n"
 	            + "    records TEXT NOT NULL,\n"
+	            + "    attempts INTEGER NOT NULL,\n"
 	            + "    completed BOOLEAN NOT NULL\n"
 	            + ");";
 
@@ -126,8 +132,8 @@ public class Sqlite {
         }
 	}
 	
-	public void insertData(String tablename, int placement, String levelname, String levelnameRaw, int levelid, String author, String creators, String verifier, String verificationLink, int percenttoqualify, String records, boolean completed) {
-	    String sql = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	public void insertData(String tablename, Integer attempts, int placement, String levelname, String levelnameRaw, int levelid, String author, String creators, String verifier, String verificationLink, int percenttoqualify, String records, boolean completed) {
+	    String sql = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	    
 	    System.out.println("tablename: " + levelname);
 	    
@@ -143,7 +149,8 @@ public class Sqlite {
 	        pstmt.setString(8, verificationLink);
 	        pstmt.setInt(9, percenttoqualify);
 	        pstmt.setString(10, records);
-	        pstmt.setBoolean(11, completed);
+	        pstmt.setInt(11, attempts);
+	        pstmt.setBoolean(12, completed);
 	        pstmt.executeUpdate();
 	      
 	    } catch (SQLException e) {
@@ -155,7 +162,7 @@ public class Sqlite {
 	
 	public void queryData(String tablename) {
 		
-		String sql = "SELECT levelname, levelNameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, completed, records FROM " + tablename;
+		String sql = "SELECT levelname, levelNameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, attempts, completed, records FROM " + tablename;
 		
 		try (Connection conn = DriverManager.getConnection(url);
 				Statement stmt  = conn.createStatement();
@@ -173,6 +180,7 @@ public class Sqlite {
 	                completed.add(rs.getBoolean("completed") + "");
 	                records.add(rs.getString("records"));
 	                rawLevelNames.add(rs.getString("levelNameRaw"));
+	                attempts.add(rs.getInt("attempts"));
 	                
 	            }
 		
@@ -195,6 +203,7 @@ public class Sqlite {
 	    ArrayList<String> recordslocal = new ArrayList<String>();
 	    ArrayList<String> completedlocal = new ArrayList<String>();
 	    ArrayList<String> rawLevelNameslocal = new ArrayList<String>();
+	    ArrayList<Integer> attemptsLocal = new ArrayList<Integer>();
 
 	    try (Connection conn = DriverManager.getConnection(url);
 	         Statement stmt = conn.createStatement()) {
@@ -226,6 +235,7 @@ public class Sqlite {
 	                completedlocal.add(rs.getBoolean("completed") + "");
 	                recordslocal.add(rs.getString("records"));
 	                rawLevelNameslocal.add(rs.getString("levelNameRaw"));
+	                attemptsLocal.add(rs.getInt("attempts"));
 	            }
 	        }
 
@@ -236,7 +246,7 @@ public class Sqlite {
 	        createNewTable(tablename);
 
 	        // Füge Daten in die neue Tabelle ein
-	        String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	        try (PreparedStatement pstmt = conn.prepareStatement(insert)) {
 	            for (int i = 0; i < levelnamelocal.size(); i++) {
 	                pstmt.setInt(1, i + 1);
@@ -249,7 +259,8 @@ public class Sqlite {
 	                pstmt.setString(8, verificationLinklocal.get(i));
 	                pstmt.setInt(9, Integer.parseInt(percenttoqualifylocal.get(i)));
 	                pstmt.setString(10, recordslocal.get(i));
-	                pstmt.setBoolean(11, false);
+	                pstmt.setInt(11, attemptsLocal.get(i));
+	                pstmt.setBoolean(12, false);
 	                pstmt.executeUpdate();
 	            }
 	        }
@@ -258,13 +269,14 @@ public class Sqlite {
 	    }
 	}
 
-	public void modifyData(String levelname, boolean completedStatus) {
-	    String sql = "UPDATE levels SET completed = ? WHERE levelname = ?";
+	public void modifyData(String levelname, boolean completedStatus, int attempts) {
+	    String sql = "UPDATE levels SET completed = ?, attempts = ? WHERE levelname = ?";
 	    
 	    try (Connection conn = DriverManager.getConnection(url);
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 	        pstmt.setBoolean(1, completedStatus);
-	        pstmt.setString(2, levelname);
+	        pstmt.setInt(2, attempts);
+	        pstmt.setString(3, levelname);
 	        
 	        int rowsUpdated = pstmt.executeUpdate();
 	        if (rowsUpdated > 0) {
@@ -276,6 +288,7 @@ public class Sqlite {
 	        e.printStackTrace();
 	    }
 	}
+
 
 
 }
