@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 import database.DatabaseManager;
 import gui.MainGUI;
 import settingsfunctions.LoadSettings;
+import settingsfunctions.MigrateData;
 
 public class DownloadLevels {
 	
@@ -94,8 +95,8 @@ public class DownloadLevels {
             	main.dispose();
 
             		MainGUI gui = new MainGUI();
-            		DatabaseManager mgr = new DatabaseManager();
-            		mgr.migrateData();
+            		MigrateData migrate = new MigrateData();
+            		migrate.migrateData();
             		try {
 						gui.build();
 					} catch (IOException e) {
