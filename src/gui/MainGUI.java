@@ -57,6 +57,7 @@ public class MainGUI {
 	public JLabel victor = new JLabel("Victors: ");
 	public JLabel idshow = new JLabel("ID");
 	public JLabel qualify = new JLabel("Qualifikation");
+	public JLabel attemptslabel = new JLabel("Attempts");
 	public JPanel recordspanel = new JPanel();
 	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschafft filtern");
@@ -111,14 +112,16 @@ public class MainGUI {
 		
 		qualify.setBounds(10, 170, 164, 30);
 		
+		attemptslabel.setBounds(10, 190, 164, 30);
+		
 		settings.setBounds(1, 1, 60, 60);
 		settings.setFont(settings.getFont().deriveFont(30f));
 		settings.setBackground(Color.LIGHT_GRAY);
 		
-		victor.setBounds(1, 276, 164, 30);
+		victor.setBounds(1, 296, 164, 30);
 		records.getVerticalScrollBar().setUnitIncrement(16);
 		
-		showinfos.setBounds(12, 227, 160, 30);
+		showinfos.setBounds(12, 247, 160, 30);
 		 
 	     scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	     scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -130,8 +133,8 @@ public class MainGUI {
 	     elements.infopanel().setVisible(false);
 	     
 	     separator.setBounds(0, 70, 300, 30);
-	     separator2.setBounds(0 ,178, 400, 30);
-	     separator3.setBounds(0, 263, 300, 30);
+	     separator2.setBounds(0 ,198, 400, 30);
+	     separator3.setBounds(0, 283, 300, 30);
 	     
 	     creator.setBounds(10, 90, 164, 30);
 	     
@@ -150,7 +153,6 @@ public class MainGUI {
 				public void run() {
 					boolean[] comp = new boolean[data.getLevelname().size()];
 					for(int i = 0; i < data.getLevelname().size(); i++) {
-						 
 						 final int index = i;
 						progress.setValue(i + 1);
 						
@@ -230,7 +232,6 @@ public class MainGUI {
 							}
 			        	});
 			        	
-			        	
 			        	confirm.addActionListener(new ActionListener() {
 
 							@Override
@@ -252,10 +253,6 @@ public class MainGUI {
 							}
 			        		
 			        	});
-			        	
-			        
-
-			        	
 			        	
 						if(Boolean.parseBoolean(data.getCompleted().get(index))) {
 							contents.setBackground(Color.decode("#cbffbf"));
@@ -282,6 +279,7 @@ public class MainGUI {
 								creator.setText("Creator: " + data.getAuthor().get(index));
 								idshow.setText("ID: " + data.getLevelID().get(index));
 								qualify.setText("Qualifikation: " + data.getPercenttoqualify().get(index) + "%");
+								attemptslabel.setText("Attempts: " + data.getAttempts().get(index));
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
 								
@@ -495,6 +493,7 @@ public class MainGUI {
 	    elements.infopanel().add(qualify);
 	    elements.infopanel().add(victor);
 	    elements.infopanel().add(showinfos);
+	    elements.infopanel().add(attemptslabel);
 	               
 	    main.add(search);
 		main.add(currentLevel);
