@@ -6,11 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import database.DatabaseManager;
-import database.Sqlite;
 
 public class GuiData {
 	
@@ -24,8 +22,6 @@ public class GuiData {
 	private ArrayList<String> victors = new ArrayList<String>();
 	private ArrayList<Integer> attempts = new ArrayList<Integer>();
 	public ArrayList<String> completed = new ArrayList<String>();
-	
-	private FetchData data = new FetchData();
 
 	private int localLength;
 	
@@ -73,10 +69,6 @@ public class GuiData {
 		DatabaseManager mgr = new DatabaseManager();
 		mgr.queryData("levels");
 		
-		Sqlite sql = new Sqlite("levels");
-		
-		FetchData data = new FetchData();
-		
 		File filelength = new File("C:\\ExtremeDemonList\\levels");
 		File[] filelengthindex = filelength.listFiles();
 		
@@ -90,7 +82,6 @@ public class GuiData {
 			jsonstring = jsonstring.trim().replace("\n", "").replace("\t", "").replace("\\", "");
 			
 			JSONObject obj = new JSONObject(jsonstring);
-			JSONArray recordsArray = obj.getJSONArray("records");
 			
 			localLevels.add(obj.getString("name"));
 			id.add(obj.getInt("id") + "");

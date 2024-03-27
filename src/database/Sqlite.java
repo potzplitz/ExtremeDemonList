@@ -2,7 +2,6 @@ package database;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -97,7 +96,6 @@ public class Sqlite {
 	    url += dbname + ".db";
 	    filename = dbname;
 	    try (Connection conn = DriverManager.getConnection(url)) {
-	        DatabaseMetaData meta = conn.getMetaData();
 	    } catch(SQLException e) {
 	        e.printStackTrace();
 	    }

@@ -12,7 +12,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import database.DatabaseManager;
 import gui.MainGUI;
 import settingsfunctions.LoadSettings;
 import settingsfunctions.MigrateData;

@@ -1,9 +1,3 @@
-	/**
-	 * 
-	 */
-	/**
-	 * 
-	 */
 	module ExtremeDemonList {
 		requires java.desktop;
 		requires org.json;

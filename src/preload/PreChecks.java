@@ -5,7 +5,6 @@ import java.io.File;
 import javax.swing.JOptionPane;
 
 import data.FetchData;
-import data.ManageFiles;
 import settingsfunctions.MigrateData;
 
 public class PreChecks {

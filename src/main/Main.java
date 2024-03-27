@@ -2,9 +2,6 @@ package main;
 
 import java.io.IOException;
 
-import javax.swing.UnsupportedLookAndFeelException;
-
-import api.GetApiData;
 import data.FetchData;
 import data.ManageFiles;
 import database.DatabaseManager;

@@ -16,14 +16,12 @@ public class FetchData {
 		if(lock == 0) {
 			lock = 1;
 		 String link = "https://raw.githubusercontent.com/All-Rated-Extreme-Demon-List/AREDL/main/data/_list.json";
-	        
 
 	        URL url = new URL(link);
 
 	        try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
 	        	
 	            String line;
-	            StringBuilder sb = new StringBuilder();
 
 	            while ((line = in.readLine()) != null) {
 	      

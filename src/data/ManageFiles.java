@@ -1,6 +1,5 @@
 package data;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -19,10 +18,6 @@ public class ManageFiles {
 	
 	public static ArrayList<String> getMissinglevels() {
 		return missinglevels;
-	}
-
-	private void feedMissingLevelsArray(String levelname) { // fehlende level werden missinglevels hinzugefügt
-		missinglevels.add(levelname);
 	}
 	
 	public void compareArrays(boolean system) throws IOException { // downloadedlevels und onlinelevels werden verglichen und die fehlenden level in missinglevels gepackt

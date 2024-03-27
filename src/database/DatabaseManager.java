@@ -2,15 +2,11 @@ package database;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import data.FetchData;
 import data.GuiData;
-import gui.MainGUI;
 import settingsfunctions.LoadSettings;
 
 public class DatabaseManager {
@@ -56,13 +52,6 @@ public class DatabaseManager {
 	
 		try {
 			data.IndexData(levels);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		
-		try {
 			fetch.getGithubString();
 		} catch (IOException e) {
 			e.printStackTrace();

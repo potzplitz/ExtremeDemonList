@@ -1,15 +1,6 @@
 package gui;
 
-import java.awt.Button;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-
 import javax.swing.JFrame;
-
-import settingsfunctions.DeleteDatabase;
-import settingsfunctions.MigrateData;
-import settingsfunctions.WriteSettings;
 
 public class SettingsGui {
 	

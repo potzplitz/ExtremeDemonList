@@ -2,7 +2,6 @@ package media;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +48,7 @@ public class PlaySong {
 
             playerThread.start();
 
-
             Thread.sleep(10000); 
-
 
             player.close();
             fis.close();
