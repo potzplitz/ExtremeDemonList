@@ -229,7 +229,11 @@ public class MainGUI {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								
-								data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()));
+								if(!(comp[index] == Boolean.parseBoolean(data.getCompleted().get(index))) || !(attempts.getText().equals(data.getAttempts().get(index) + ""))) {
+									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()));
+								}
+								
+								
 								
 								if(!comp[index]) {
 									contents.setBackground(Color.WHITE);

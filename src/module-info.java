@@ -8,4 +8,6 @@
 		requires jdash.common;
 		requires jlayer;
 		requires java.sql;
+		requires java.xml;
+		requires org.apache.commons.codec;
 	}

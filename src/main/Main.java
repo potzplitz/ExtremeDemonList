@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.zip.DataFormatException;
 
 import data.FetchData;
 import data.ManageFiles;
@@ -8,11 +9,14 @@ import database.DatabaseManager;
 import filestructure.CreateFileStructure;
 import gui.LoadMenu;
 import preload.PreChecks;
+import readsafefile.DecryptXOR;
+import readsafefile.ReadAttemptsFromXML;
+import readsafefile.SafeFileManager;
 import settingsfunctions.LoadSettings;
 
 public class Main {
 	
-	public static void main(String[] args) throws IOException { 
+	public static void main(String[] args) throws IOException, DataFormatException { 
 
 		LoadMenu load = new LoadMenu();
 		load.onLoad();

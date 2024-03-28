@@ -67,7 +67,7 @@ public class GuiData {
 	
 	public void IndexData(ArrayList<String> migrate) throws IOException {
 		DatabaseManager mgr = new DatabaseManager();
-		mgr.queryData("levels");
+		
 		
 		File filelength = new File("C:\\ExtremeDemonList\\levels");
 		File[] filelengthindex = filelength.listFiles();
