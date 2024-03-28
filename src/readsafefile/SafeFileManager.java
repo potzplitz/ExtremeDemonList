@@ -43,7 +43,7 @@ public class SafeFileManager {
 		
 		for(int i = 0; i < fetch.allLevels().size(); i++) {
 			
-			attempts = read.getAttempts(database.getLevelname().get(i));
+			attempts = read.getAttempts(database.getLevelID().get(i));
 			
 			prog.update(database.getLevelname().get(i), Integer.parseInt(attempts), 1, i);
 			database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), Integer.parseInt(attempts));

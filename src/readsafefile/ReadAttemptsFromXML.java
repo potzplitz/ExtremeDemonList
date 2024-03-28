@@ -6,78 +6,72 @@ import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class ReadAttemptsFromXML {
 	
-	public String getAttempts(String level) {
-		String atts = "0";
-        try {
-            // Pfad zur XML-Datei
-            String filePath = "C:\\ExtremeDemonList\\userdata\\CCGameManager.dat.xml";
-            
+	 public String getAttempts(String levelID) {
+	        String atts = "0";
+	        try {
+	            // Pfad zur XML-Datei
+	            File xmlFile = new File("C:\\ExtremeDemonList\\userdata\\CCGameManager.dat.xml");
 
-            // XML-Datei einlesen und als DOM-Dokument parsen
-            File xmlFile = new File(filePath);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(xmlFile);
-            doc.getDocumentElement().normalize();
+	            // Erstellen des Dokument-Builders
+	            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-            // Nach dem Eintrag für "Theory of Everything" suchen
-            NodeList levelNodes = doc.getElementsByTagName("d");
-            int index = 1;
-            for (int i = 0; i < levelNodes.getLength(); i++) {
-            	
-                Node levelNode = levelNodes.item(i);
-                if (levelNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element levelElement = (Element) levelNode;
-                    NodeList nameNodes = levelElement.getElementsByTagName("s");
-                    for (int j = 0; j < nameNodes.getLength(); j++) {
-                        Node nameNode = nameNodes.item(j);
-                        if (nameNode.getNodeType() == Node.ELEMENT_NODE) {
-                            Element nameElement = (Element) nameNode;
-                            String name = nameElement.getTextContent();
-                            if (name.equalsIgnoreCase(level)) {
-                                // Wenn der Name übereinstimmt, die Anzahl der Versuche extrahieren
-                                NodeList keyNodes = levelElement.getElementsByTagName("k");
-                                for (int k = 0; k < keyNodes.getLength(); k++) {
-                                    Node keyNode = keyNodes.item(k);
-                                    if (keyNode.getNodeType() == Node.ELEMENT_NODE) {
-                                        Element keyElement = (Element) keyNode;
-                                        String key = keyElement.getTextContent();
-                                        if (key.equals("k18") && index == 2) {
-                                            // Wert des Schlüssels "k18" (Versuche) ausgeben
-                                            NodeList valueNodes = levelElement.getElementsByTagName("i");
-                                            Node valueNode = valueNodes.item(k);
-                                           atts = valueNode.getTextContent(); // Sobald die Anzahl der Versuche gefunden wurde, die Schleife beenden
-                                        }
-                                        
-                                        if(key.equals("GS_7")) {
-                                        	NodeList valueNodes = levelElement.getElementsByTagName("i");
-                                            Node valueNode = valueNodes.item(k);
-                                        	System.out.println(valueNode.getTextContent() + " = practice percent");
-                                        }
-                                        
-                                    }
-                                }
-                               index++; 
-                            }
-                        }
-                    }
-                }
-            }
+	            // Parsen der XML-Datei, um ein Document-Objekt zu erhalten
+	            Document doc = dBuilder.parse(xmlFile);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		return atts;
-    }
-	
-	
-	
+	            // Normalisieren des Documents
+	            doc.getDocumentElement().normalize();
+
+	            // Die NodeList der <k> Elemente erhalten
+	            NodeList kList = doc.getElementsByTagName("k");
+
+	            // Durchlaufen der NodeList
+	            for (int i = 0; i < kList.getLength(); i++) {
+	                // Aktuelles Node
+	                Element kElement = (Element) kList.item(i);
+
+	                // Prüfen, ob der Wert des <k> Elements eine Level-ID ist
+	                String currentLevelID = kElement.getTextContent();
+	                if (currentLevelID.equals(levelID)) {
+	                    // Das übergeordnete <d> Element finden
+	                    Element dElement = (Element) kElement.getNextSibling();
+
+	                    // Überprüfen, ob das nächste Element ein <d> Element ist
+	                    while (dElement != null && !dElement.getNodeName().equals("d")) {
+	                        dElement = (Element) dElement.getNextSibling();
+	                    }
+
+	                    // Überprüfen, ob das <d> Element gefunden wurde
+	                    if (dElement != null) {
+	                        // Den <k> Key "k1" im <d> Element finden
+	                        NodeList dChildren = dElement.getChildNodes();
+	                        for (int j = 0; j < dChildren.getLength(); j++) {
+	                            if (dChildren.item(j).getNodeName().equals("k")) {
+	                                Element kChild = (Element) dChildren.item(j);
+	                                if (kChild.getTextContent().equals("k18")) {
+	                                    // Den Wert der Attempts erhalten
+	                                    atts = dChildren.item(j + 1).getTextContent();
+	                                    System.out.println("Attempts des Levels " + levelID + ": " + atts);
+	                                    return atts;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return atts;
+	    }
 }
