@@ -76,6 +76,7 @@ public class DatabaseManager {
 				    data.getYoutubeLink().get(i), // YouTube-Link
 				    Integer.parseInt(data.getQualification().get(i)), // Qualifikation
 				    data.getVictors().get(i), // Sieger
+				    false,
 				    false
 				);
 		}

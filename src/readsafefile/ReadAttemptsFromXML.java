@@ -1,18 +1,13 @@
 package readsafefile;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class ReadAttemptsFromXML {
 	
@@ -41,7 +36,8 @@ public class ReadAttemptsFromXML {
 	                Element kElement = (Element) kList.item(i);
 
 	                // Prüfen, ob der Wert des <k> Elements eine Level-ID ist
-	                String currentLevelID = kElement.getTextContent();
+	                String currentLevelID = kElement.getTextContent(); 
+	                
 	                if (currentLevelID.equals(levelID)) {
 	                    // Das übergeordnete <d> Element finden
 	                    Element dElement = (Element) kElement.getNextSibling();

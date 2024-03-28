@@ -3,6 +3,7 @@ package gui;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -145,6 +146,7 @@ public class MainGUI {
 				@Override
 				public void run() {
 					boolean[] comp = new boolean[data.getLevelname().size()];
+					boolean[] lockbool = new boolean[data.getLevelname().size()];
 					for(int i = 0; i < data.getLevelname().size(); i++) {
 						 final int index = i;
 						progress.setValue(i + 1);
@@ -156,35 +158,63 @@ public class MainGUI {
 			        	contents.setPreferredSize(new Dimension(600, 50));
 			        	contents.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			        	contents.setLayout(null);
-	
+			        	
+			        	JPanel lockind = new JPanel();
+			        	lockind.setBounds(678, 0, 2, 50);
+			        	
 			        	JButton completed = new JButton("x");
-			        	completed.setBounds(610, 17, 17, 17);
+			        	completed.setBounds(610, 17, 18, 18);
 			        	completed.setMargin(new Insets(0,0,0,0));
 			        	completed.setVisible(false);
 			        	
 			        	JButton uncompleted = new JButton("\u2713");
-			        	uncompleted.setBounds(610, 17, 17, 17);
+			        	uncompleted.setBounds(610, 17, 18, 18);
 			        	uncompleted.setMargin(new Insets(0,0,0,0));
 			        	uncompleted.setVisible(false);
 			        	
 			        	JTextField attempts = new JTextField("0");
-			        	attempts.setBounds(535, 17, 70, 18);
+			        	attempts.setBounds(500, 17, 70, 18);
 			        	attempts.setVisible(false);
 
 			        	JButton confirm = new JButton("\uD83D\uDDAB");
-			        	confirm.setBounds(640, 17, 17, 17);
+			        	confirm.setBounds(640, 17, 18, 18);
 			        	confirm.setMargin(new Insets(0, 0, 0, 0));
 			        	
 			        	JButton anpassen = new JButton("⚙");
-			        	anpassen.setBounds(640, 17, 17, 17);
+			        	anpassen.setBounds(640, 17, 18, 18);
 			        	anpassen.setMargin(new Insets(0, 0, 0, 0));
 			        	
-			        	
+			        	JButton sperren = new JButton("\uD83D\uDD12"); // Schlüssel-Symbol
+			            sperren.setBounds(580, 17, 18, 18);
+			            sperren.setMargin(new Insets(0, 0, 0, 0));
+			            sperren.setVisible(false);
 			        	
 			        	if(data.getAttempts().get(i) != null) {
 			        		attempts.setText(data.getAttempts().get(i) + "");
 			        	}
 			        	
+			        	if(data.getLocked().get(index)) {
+			        		lockbool[index] = true;
+			        		lockind.setBackground(Color.RED);
+			        	}
+			        	
+			        	sperren.addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {    
+								
+								if(lockbool[index]) {
+									lockbool[index] = false;
+									lockind.setBackground(Color.WHITE);
+								} else {
+									lockbool[index] = true;
+									
+									lockind.setBackground(Color.RED);
+								}
+								
+							}
+			        		
+			        	});
 			        	
 			        	
 			        	completed.addActionListener(new ActionListener() {
@@ -213,6 +243,7 @@ public class MainGUI {
 								anpassen.setVisible(false);
 								confirm.setVisible(true);
 								attempts.setVisible(true);
+								sperren.setVisible(true);
 								if(Boolean.parseBoolean(data.getCompleted().get(index))) {
 									uncompleted.setVisible(true);
 									completed.setVisible(false);
@@ -229,8 +260,8 @@ public class MainGUI {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								
-								if(!(comp[index] == Boolean.parseBoolean(data.getCompleted().get(index))) || !(attempts.getText().equals(data.getAttempts().get(index) + ""))) {
-									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()));
+								if(!(comp[index] == Boolean.parseBoolean(data.getCompleted().get(index))) || !(attempts.getText().equals(data.getAttempts().get(index) + "")) || !(data.getLocked().get(index) == lockbool[index])) {
+									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index]);
 								}
 								
 								
@@ -246,6 +277,7 @@ public class MainGUI {
 								uncompleted.setVisible(false);
 								completed.setVisible(false);		
 								attempts.setVisible(false);
+								sperren.setVisible(false);
 							}	
 			        	});
 			        	
@@ -407,6 +439,8 @@ public class MainGUI {
 			        	contents.add(anpassen);
 			        	contents.add(confirm);
 			        	contents.add(attempts);
+			        	contents.add(sperren);
+			        	contents.add(lockind);
 			        	levelpanel.add(contents);
 			        	
 			        }
