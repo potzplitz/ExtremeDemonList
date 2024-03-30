@@ -18,6 +18,9 @@ public class DatabaseManager {
 			createLevelDB.createNewDatabase("levels");
 		}
 		createLevelDB.createNewTable("levels");
+		
+		createLevelDB.checkColumns("levels");
+		
 	}
 	
 	public void migrateData() {
@@ -77,7 +80,8 @@ public class DatabaseManager {
 				    Integer.parseInt(data.getQualification().get(i)), // Qualifikation
 				    data.getVictors().get(i), // Sieger
 				    false,
-				    false
+				    false,
+				    ""
 				);
 		}
 		

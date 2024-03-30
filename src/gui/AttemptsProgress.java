@@ -9,6 +9,7 @@ import javax.swing.JTextArea;
 
 import data.FetchData;
 import data.ManageFiles;
+import database.Sqlite;
 
 public class AttemptsProgress {
 	
@@ -16,9 +17,16 @@ public class AttemptsProgress {
 	 JTextArea area = new JTextArea();
 	JScrollPane scroll = new JScrollPane(area);
 	JFrame main = new JFrame("Updater");
+	JLabel zeit = new JLabel("Verstrichene Zeit: ");
+	
+	private float timer;
+	private float finishedtime;
+	private boolean running = false;
 	
 	
 	public void build() {
+		
+		running = true;
 		
 		
         main.setSize(400, 300);
@@ -26,8 +34,8 @@ public class AttemptsProgress {
         main.setResizable(false);
         main.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
-        JLabel info = new JLabel("Speicherstand wird gelesen...");
-        info.setBounds(120, 1, 500, 30);
+        
+        zeit.setBounds(90, 1, 500, 30);
         
        
         area.setEditable(false);
@@ -47,20 +55,24 @@ public class AttemptsProgress {
         bar.setMaximum(data.allLevels().size() - 1);
         bar.setStringPainted(true);
         
-        main.add(info);
+        main.add(zeit);
         main.add(scroll);
         main.add(bar);
         main.setVisible(true);
+        
+        area.append("Speicherstand wird eingelesen...");
 		
 	}
 	
-	public void update(String level, int attempts, int selection, int index) {
+	public void update(String level, int attempts, int percent, int index) {
 		bar.setValue(index);
-		area.append(level + " >>> " + attempts + " Attempts\n");
+		area.append(index + "| " + level + " >>> " + attempts + " Attempts, Progress: " + percent + "%\n");
 		area.setCaretPosition(area.getDocument().getLength());
+		timer = 0;
 	}
 	
 	public void close() {
+		running = false;
 		JOptionPane.showMessageDialog(null, "Attempts wurden erfolgreich übertragen.", "Fertig", JOptionPane.INFORMATION_MESSAGE);
 		main.dispose();
 	}

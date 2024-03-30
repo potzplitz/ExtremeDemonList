@@ -2,21 +2,21 @@ package database;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import data.FetchData;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 public class Sqlite {
-	
-	private static String url = "jdbc:sqlite:C:\\ExtremeDemonList\\database\\sqlite\\";
+
+    private static String url = "jdbc:sqlite:C:\\ExtremeDemonList\\database\\sqlite\\";
     private static String filename;
-    
+
     private ArrayList<String> levelname = new ArrayList<String>();
     private ArrayList<String> levelID = new ArrayList<String>();
     private ArrayList<String> author = new ArrayList<String>();
@@ -29,6 +29,7 @@ public class Sqlite {
     private ArrayList<String> rawLevelNames = new ArrayList<String>();
     private ArrayList<Integer> attempts = new ArrayList<Integer>();
     private ArrayList<Boolean> locked = new ArrayList<Boolean>(); // New column
+    private ArrayList<String> pbarr = new ArrayList<String>();
 
     public ArrayList<String> getLevelname() {
         return levelname;
@@ -69,7 +70,7 @@ public class Sqlite {
     public ArrayList<String> getRawLevelNames() {
         return rawLevelNames;
     }
-    
+
     public ArrayList<Integer> getAttempts() {
         return attempts;
     }
@@ -78,34 +79,32 @@ public class Sqlite {
         return locked;
     }
 
+    public ArrayList<String> getPbarr() {
+        return pbarr;
+    }
+
     public Sqlite(String dbname) { // setzt variablen
         url = "jdbc:sqlite:C:\\ExtremeDemonList\\database\\sqlite\\";
-         url += dbname + ".db";
-         filename = dbname + "";
-         
+        url += dbname + ".db";
+        filename = dbname + "";
     }
 
     public boolean exists() { // überprüft, ob datenbank existiert
-        
+
         File file = new File("C:\\ExtremeDemonList\\database\\sqlite\\" + filename + ".db");
-        if(file.exists()) {
-            return true; // ja
-        } else {
-            return false; // nein
-        }   
+        return file.exists();
     }
-    
+
     public void createNewDatabase(String dbname) { // erstellt eine neue datenbank
         url = "jdbc:sqlite:C:\\ExtremeDemonList\\database\\sqlite\\";
         url += dbname + ".db";
         filename = dbname;
         try (Connection conn = DriverManager.getConnection(url)) {
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    
     public void createNewTable(String tablename) {
         String sql = "CREATE TABLE IF NOT EXISTS " + tablename + " (\n"
                 + "    id INTEGER PRIMARY KEY,\n"
@@ -121,24 +120,24 @@ public class Sqlite {
                 + "    records TEXT NOT NULL,\n"
                 + "    attempts INTEGER NOT NULL,\n"
                 + "    completed BOOLEAN NOT NULL,\n"
-                + "    locked BOOLEAN NOT NULL\n" // Neue Spalte
+                + "    locked BOOLEAN NOT NULL,\n" // Neue Spalte
+                + "    personalBest STRING NOT NULL\n"
                 + ");";
 
-        
         try (Connection conn = DriverManager.getConnection(url);
-                Statement stmt = conn.createStatement()) {
+             Statement stmt = conn.createStatement()) {
             // create a new table
             stmt.execute(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-    
-    public void insertData(String tablename, Integer attempts, int placement, String levelname, String levelnameRaw, int levelid, String author, String creators, String verifier, String verificationLink, int percenttoqualify, String records, boolean completed, boolean locked) {
-        String sql = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
+    public void insertData(String tablename, Integer attempts, int placement, String levelname, String levelnameRaw, int levelid, String author, String creators, String verifier, String verificationLink, int percenttoqualify, String records, boolean completed, boolean locked, String pb) {
+        String sql = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         System.out.println("tablename: " + levelname);
-        
+
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, placement);
@@ -154,47 +153,48 @@ public class Sqlite {
             pstmt.setInt(11, attempts);
             pstmt.setBoolean(12, completed);
             pstmt.setBoolean(13, locked);
+            pstmt.setString(14, pb);
             pstmt.executeUpdate();
-          
+
         } catch (SQLException e) {
-           e.printStackTrace();
-        }
-    }
-
-
-    
-    public void queryData(String tablename) {
-        
-        String sql = "SELECT levelname, levelNameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, attempts, completed, records, locked FROM " + tablename;
-        
-        try (Connection conn = DriverManager.getConnection(url);
-                Statement stmt  = conn.createStatement();
-                     ResultSet rs    = stmt.executeQuery(sql)){
-                    
-                    // loop through the result set
-                    while (rs.next()) {
-                        levelname.add(rs.getString("levelname"));
-                        levelID.add(rs.getInt("levelID") + "");
-                        author.add(rs.getString("author"));
-                        creators.add(rs.getString("creators"));
-                        verifier.add(rs.getString("verifier"));
-                        verificationLink.add(rs.getString("verificationLink"));
-                        percenttoqualify.add(rs.getInt("percentToQualify") + "");
-                        completed.add(rs.getBoolean("completed") + "");
-                        records.add(rs.getString("records"));
-                        rawLevelNames.add(rs.getString("levelNameRaw"));
-                        attempts.add(rs.getInt("attempts"));
-                        locked.add(rs.getBoolean("locked")); // Get the value of the new column
-                    }
-        
-        } catch(SQLException e) {
             e.printStackTrace();
         }
-        
     }
-    
+
+    public void queryData(String tablename) {
+
+        String sql = "SELECT * FROM " + tablename;
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            // loop through the result set
+            while (rs.next()) {
+                levelname.add(rs.getString("levelname"));
+                levelID.add(rs.getInt("levelID") + "");
+                author.add(rs.getString("author"));
+                creators.add(rs.getString("creators"));
+                verifier.add(rs.getString("verifier"));
+                verificationLink.add(rs.getString("verificationLink"));
+                percenttoqualify.add(rs.getInt("percentToQualify") + "");
+                completed.add(rs.getBoolean("completed") + "");
+                records.add(rs.getString("records"));
+                rawLevelNames.add(rs.getString("levelNameRaw"));
+                attempts.add(rs.getInt("attempts"));
+                locked.add(rs.getBoolean("locked")); // Get the value of the new column
+                pbarr.add(rs.getString("personalBest"));
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void sortData(String tablename) throws SQLException {
-        FetchData data = new FetchData();
+    	FetchData data = new FetchData();
 
         ArrayList<String> levelnamelocal = new ArrayList<String>();
         ArrayList<String> levelIDlocal = new ArrayList<String>();
@@ -208,6 +208,7 @@ public class Sqlite {
         ArrayList<String> rawLevelNameslocal = new ArrayList<String>();
         ArrayList<Integer> attemptsLocal = new ArrayList<Integer>();
         ArrayList<Boolean> lockedLocal = new ArrayList<Boolean>();
+        ArrayList<String> pblocal = new ArrayList<String>();
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -241,6 +242,7 @@ public class Sqlite {
                     rawLevelNameslocal.add(rs.getString("levelNameRaw"));
                     attemptsLocal.add(rs.getInt("attempts"));
                     lockedLocal.add(rs.getBoolean("locked"));
+                    pblocal.add(rs.getString("personalBest"));
                 }
             }
 
@@ -251,7 +253,7 @@ public class Sqlite {
             createNewTable(tablename);
 
             // Füge Daten in die neue Tabelle ein
-            String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insert)) {
                 for (int i = 0; i < levelnamelocal.size(); i++) {
                     pstmt.setInt(1, i + 1);
@@ -267,6 +269,7 @@ public class Sqlite {
                     pstmt.setInt(11, attemptsLocal.get(i));
                     pstmt.setBoolean(12, false);
                     pstmt.setBoolean(13, lockedLocal.get(i)); // Insert value of locked column
+                    pstmt.setString(14, pblocal.get(i));
                     pstmt.executeUpdate();
                 }
             }
@@ -275,16 +278,19 @@ public class Sqlite {
         }
     }
 
-    public void modifyData(String levelname, boolean completedStatus, int attempts, boolean lock) {
-        String sql = "UPDATE levels SET completed = ?, attempts = ?, locked = ? WHERE levelname = ?";
-        
+    public void modifyData(String levelname, boolean completedStatus, int attempts, boolean lock, String percent) {
+        String sql = "UPDATE levels SET completed = ?, attempts = ?, locked = ?, personalBest = ? WHERE levelname = ?";
+
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBoolean(1, completedStatus);
             pstmt.setInt(2, attempts);
             pstmt.setBoolean(3, lock); // Korrigierte Reihenfolge
-            pstmt.setString(4, levelname); // Korrigierte Reihenfolge
+            pstmt.setString(4, percent);
+            pstmt.setString(5, levelname); // Korrigierte Reihenfolge
             
+           
+
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Data updated successfully.");
@@ -296,4 +302,72 @@ public class Sqlite {
         }
     }
 
+    public void checkColumns(String tablename) {
+        String[] spalten = {"placement", "levelname", "levelnameRaw", "levelID", "author", "creators", "verifier", "verificationLink", "percentToQualify", "records", "attempts", "completed", "locked", "personalBest"};
+
+        // Datenbankverbindung
+        try (Connection connection = DriverManager.getConnection(url)) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet resultSet;
+
+            int missing = 0;
+
+            // Schleife über die Spalten
+            for (String spalte : spalten) {
+                // Abfrage der Spalteninformationen
+                resultSet = metaData.getColumns(null, null, tablename, spalte);
+
+                if (!resultSet.next()) {
+                    System.out.println("Spalte " + spalte + " existiert nicht. Eine neue Spalte wird erstellt.");
+                    // Eine neue Spalte erstellen
+                    createNewColumn(tablename, spalte);
+                    missing++;
+                }
+            }
+
+            if (missing > 0) {
+                moveDataToNewDatabase(tablename);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createNewColumn(String tablename, String columnName) {
+        String sql = "ALTER TABLE " + tablename + " ADD COLUMN " + columnName + " TEXT";
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void moveDataToNewDatabase(String tablename) {
+        // Neuen Tabellennamen für die Kopie
+        String newTableName = tablename + "_new";
+
+        // Erstelle die neue Tabelle
+        createNewTable(newTableName);
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+
+            // SQL-Abfrage, um Daten von der alten Tabelle in die neue Tabelle zu kopieren
+            String copyDataQuery = "INSERT INTO " + newTableName + " SELECT * FROM " + tablename;
+
+            // Führe die SQL-Abfrage aus
+            stmt.executeUpdate(copyDataQuery);
+
+            // Lösche die alte Tabelle
+            String dropOldTableQuery = "DROP TABLE IF EXISTS " + tablename;
+            stmt.executeUpdate(dropOldTableQuery);
+
+            System.out.println("Daten wurden erfolgreich von der alten Tabelle in die neue Tabelle kopiert.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

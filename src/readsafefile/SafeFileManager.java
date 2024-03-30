@@ -9,8 +9,7 @@ import gui.AttemptsProgress;
 public class SafeFileManager {
 	
 	public void DecryptSafeFile() throws IOException {
-		DecryptXOR dec = new DecryptXOR();
-		dec.decryptAndWriteFiles();
+		DecryptXOR.decryptAndWriteFiles();
 	}
 	
 	public void ReadIndexAttempts() throws IOException {
@@ -22,37 +21,38 @@ public class SafeFileManager {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
-				
-
-		
 		Sqlite database = new Sqlite("levels");
 		database.queryData("levels");
 		FetchData fetch = new FetchData();
 		try {
 			fetch.getGithubString();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		
 		ReadAttemptsFromXML read = new ReadAttemptsFromXML();
 		
+		read.readAttempts();
+		
+		
 		String attempts;
-		
-		for(int i = 0; i < fetch.allLevels().size(); i++) {
-			
-			attempts = read.getAttempts(database.getLevelID().get(i));
-			
-			prog.update(database.getLevelname().get(i), Integer.parseInt(attempts), 1, i);
-			if(!database.getLocked().get(i)) {
-			database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), Integer.parseInt(attempts), database.getLocked().get(i));
+		String percent;
+		for(int i = 0; i < database.getLevelID().size(); i++) {
+			attempts = read.attempts.get(database.getLevelID().get(i));
+			percent = read.newbestMap.get(database.getLevelID().get(i));
+			if(attempts == null) {
+				attempts = 0 + "";
 			}
-		}	
-	}
-		
-	});
+			if(percent == null) {
+				percent = 0 + "";
+			}
+			prog.update(database.getLevelname().get(i), Integer.parseInt(attempts), Integer.parseInt(percent), i);
+			if(!database.getLocked().get(i)) {
+				database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), Integer.parseInt(attempts), database.getLocked().get(i), percent);
+				}
+			}
+		 }	
+	 });
 	thread.start();
 	}
 }

@@ -6,6 +6,7 @@ import java.util.zip.DataFormatException;
 import data.FetchData;
 import data.ManageFiles;
 import database.DatabaseManager;
+import database.Sqlite;
 import filestructure.CreateFileStructure;
 import gui.LoadMenu;
 import preload.PreChecks;
@@ -38,6 +39,9 @@ public class Main {
 		
 		load.updateBar("Daten werden überprüft...");
 		
+		Sqlite sql = new Sqlite("levels");
+		sql.checkColumns("levels");
+		
 		PreChecks check = new PreChecks();
 		check.check();
 		
@@ -47,8 +51,7 @@ public class Main {
 		manager.compareArrays(settings.isOldsystem());
 		
 		load.updateBar("Datenbank wird gestartet...");
-		
-		DatabaseManager data = new DatabaseManager();
+		DatabaseManager data = new DatabaseManager();		
 		data.manage();
 
 		load.updateBar("Ladevorgang abgeschlossen");

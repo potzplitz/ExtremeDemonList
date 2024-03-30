@@ -75,6 +75,7 @@ public class MainGUI {
 		data.queryData("levels");
 		
 		gridLayout.setRows(data.getLevelname().size());
+		
 			
 		main.setSize(900, 700);
 		main.setLayout(null);
@@ -93,8 +94,7 @@ public class MainGUI {
 		info.setBounds(380, 270, 300, 30);
 	
 		currentLevel.setBounds(200, 330, 200, 30);
-		
-		levelpanel.setBackground(Color.LIGHT_GRAY);
+
 		levelpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		levelpanel.setLayout(gridLayout);
 
@@ -171,6 +171,9 @@ public class MainGUI {
 			        	uncompleted.setBounds(610, 17, 18, 18);
 			        	uncompleted.setMargin(new Insets(0,0,0,0));
 			        	uncompleted.setVisible(false);
+			        	
+			        	JLabel percent = new JLabel("0%");
+			        	percent.setBounds(130, 10, 100, 30);
 			        	
 			        	JTextField attempts = new JTextField("0");
 			        	attempts.setBounds(500, 17, 70, 18);
@@ -261,7 +264,7 @@ public class MainGUI {
 							public void actionPerformed(ActionEvent e) {
 								
 								if(!(comp[index] == Boolean.parseBoolean(data.getCompleted().get(index))) || !(attempts.getText().equals(data.getAttempts().get(index) + "")) || !(data.getLocked().get(index) == lockbool[index])) {
-									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index]);
+									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index], data.getPbarr().get(index));
 								}
 								
 								
@@ -337,6 +340,17 @@ public class MainGUI {
 			        	JLabel rank = new JLabel("#" + (i + 1));
 			        	rank.setBounds(10, 10, 40, 30);
 			        	rank.setName(i + "");
+			        	
+			        	if(data.getPbarr().get(i) == null) {
+			        		percent.setText("0%");
+			        	} else {
+			        		percent.setText(data.getPbarr().get(i) + "%");
+			        	}
+			        	
+			        	if(Boolean.parseBoolean(data.getCompleted().get(i))) {
+			        		percent.setText("100%");
+			        		percent.setForeground(Color.decode("#008000"));
+			        	}
 			        	
 			        	filtercompleted.setText("nach Geschafft filtern (" + completedcount + ")");
 			        	
@@ -417,20 +431,20 @@ public class MainGUI {
 			        	filtercompleted.addItemListener(new ItemListener() {
 			        	    @Override
 			        	    public void itemStateChanged(ItemEvent e) {
-			        	        if (e.getStateChange() == ItemEvent.SELECTED) {
-			        	            if (!contents.getBackground().equals(Color.decode("#cbffbf"))) {
-			        	                levelpanel.remove(contents);
-			        	                gridLayout.setRows(data.getLevelname().size());
-			        	                scroll.repaint();
-			        	                scroll.revalidate();
-			        	            }
-			        	        } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+			        	        boolean isSelected = e.getStateChange() == ItemEvent.SELECTED;
+			        	        if (isSelected && !contents.getBackground().equals(Color.decode("#cbffbf"))) {
+			        	            levelpanel.remove(contents);
+			        	            gridLayout.setRows(data.getLevelname().size());
+			        	            scroll.repaint();
+			        	            scroll.revalidate();
+			        	        } else if (!isSelected) {
 			        	            levelpanel.add(contents, 0);
 			        	        }
 			        	        levelpanel.repaint();
 			        	        levelpanel.revalidate();
 			        	    }
-			        	}); 
+			        	});
+
   	
 			        	contents.add(levelname);
 			        	contents.add(rank);
@@ -441,6 +455,7 @@ public class MainGUI {
 			        	contents.add(attempts);
 			        	contents.add(sperren);
 			        	contents.add(lockind);
+			        	contents.add(percent);
 			        	levelpanel.add(contents);
 			        	
 			        }
