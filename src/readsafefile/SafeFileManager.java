@@ -34,7 +34,6 @@ public class SafeFileManager {
 		
 		read.readAttempts();
 		
-		
 		String attempts;
 		String percent;
 		for(int i = 0; i < database.getLevelID().size(); i++) {
@@ -51,6 +50,7 @@ public class SafeFileManager {
 				database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), Integer.parseInt(attempts), database.getLocked().get(i), percent);
 				}
 			}
+		prog.close();
 		 }	
 	 });
 	thread.start();
