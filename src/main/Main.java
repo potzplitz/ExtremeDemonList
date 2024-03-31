@@ -10,9 +10,6 @@ import database.Sqlite;
 import filestructure.CreateFileStructure;
 import gui.LoadMenu;
 import preload.PreChecks;
-import readsafefile.DecryptXOR;
-import readsafefile.ReadAttemptsFromXML;
-import readsafefile.SafeFileManager;
 import settingsfunctions.LoadSettings;
 
 public class Main {

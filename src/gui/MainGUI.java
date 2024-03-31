@@ -18,8 +18,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -31,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import data.SortData;
 import database.Sqlite;
 
 public class MainGUI {
@@ -43,28 +49,30 @@ public class MainGUI {
 	public JScrollPane scroll = new JScrollPane(levelpanel);
 	public JTextField search = new JTextField();
 	public JLabel levelname;
+	public JLabel percent;
 	public JLabel level = new JLabel("Liste");
 	public JLabel creator = new JLabel("Creator");
 	public JLabel separator = new JLabel("_______________________________________________________________________________________________________________");
 	public JLabel separator2 = new JLabel("_______________________________________________________________________________________________________________");
-	public JLabel separator3 = new JLabel("_______________________________________________________________________________________________________________");
 	public JLabel verifier = new JLabel("Verifier");
 	public JLabel victorcount = new JLabel("Anzahl Victors");
-	public JLabel victor = new JLabel("Victors: ");
 	public JLabel idshow = new JLabel("ID");
 	public JLabel qualify = new JLabel("Qualifikation");
 	public JLabel attemptslabel = new JLabel("Attempts");
-	public JPanel recordspanel = new JPanel();
-	public JScrollPane records = new JScrollPane(recordspanel);
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschafft filtern");
 	public Button copyid = new Button("Level ID kopieren");
 	public Button showinfos = new Button("Mehr Infos anzeigen");
+	public Button startgame = new Button("Geometry Dash starten");
 	public JButton settings = new JButton("⚙");
 	GridLayout gridLayout = new GridLayout(3, 1);
 	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
+	private String[] sortlist = {"Nach Plazierung filtern", "Absteigend", "Aufsteigend"};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JComboBox show = new JComboBox(showing);
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public JComboBox sortbox = new JComboBox(sortlist);
 	private Elements elements = new Elements();
+	private SortData sort = new SortData();
 	
 	private int completedcount = 0;
 	
@@ -74,6 +82,8 @@ public class MainGUI {
 		Sqlite data = new Sqlite("levels");
 		data.queryData("levels");
 		
+		sort.sort();
+		
 		gridLayout.setRows(data.getLevelname().size());
 		
 			
@@ -81,6 +91,10 @@ public class MainGUI {
 		main.setLayout(null);
 		main.setResizable(false);
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		
+		main.setIconImage(new ImageIcon("rsc/demon-6.png").getImage());
+		
 		
 		level.setBounds(10, 10, 200, 30);
 		level.setFont(level.getFont().deriveFont(15f));
@@ -98,24 +112,23 @@ public class MainGUI {
 		levelpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		levelpanel.setLayout(gridLayout);
 
-		victorcount.setBounds(10, 130, 164, 30);
+		victorcount.setBounds(10, 90, 164, 30);
 		
-		idshow.setBounds(10, 150, 164, 30);
+		idshow.setBounds(10, 110, 164, 30);
 		
-		copyid.setBounds(10, 50, 164, 30);
+		copyid.setBounds(10, 190, 164, 30);
 		
-		qualify.setBounds(10, 170, 164, 30);
+		qualify.setBounds(10, 130, 164, 30);
 		
-		attemptslabel.setBounds(10, 190, 164, 30);
+		attemptslabel.setBounds(10, 150, 164, 30);
 		
 		settings.setBounds(1, 1, 60, 60);
 		settings.setFont(settings.getFont().deriveFont(30f));
 		settings.setBackground(Color.LIGHT_GRAY);
 		
-		victor.setBounds(1, 296, 164, 30);
-		records.getVerticalScrollBar().setUnitIncrement(16);
+		showinfos.setBounds(12, 237, 160, 30);
 		
-		showinfos.setBounds(12, 247, 160, 30);
+		startgame.setBounds(12, 560, 160, 30);
 		 
 	     scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	     scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -126,19 +139,19 @@ public class MainGUI {
 	     elements.infopanel().setBounds(700, 61, 184, 600);
 	     elements.infopanel().setVisible(false);
 	     
-	     separator.setBounds(0, 70, 300, 30);
-	     separator2.setBounds(0 ,198, 400, 30);
-	     separator3.setBounds(0, 283, 300, 30);
+	     separator.setBounds(0, 30, 300, 30);
+	     separator2.setBounds(0 ,160, 400, 30);
 	     
-	     creator.setBounds(10, 90, 164, 30);
+	     creator.setBounds(10, 50, 164, 30);
 	     
-	     verifier.setBounds(10, 110, 164, 30);
+	     verifier.setBounds(10, 70, 164, 30);
 	     
 	     search.setBounds(60, 1, 440, 60);
 	     
-	     show.setBounds(500, 1, 200, 60);
+	     show.setBounds(500, 1, 200, 30);
 	     
-	     recordspanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	     sortbox.setBounds(500, 31, 200, 30);
+	     
 	     
 	      
 	        
@@ -172,7 +185,7 @@ public class MainGUI {
 			        	uncompleted.setMargin(new Insets(0,0,0,0));
 			        	uncompleted.setVisible(false);
 			        	
-			        	JLabel percent = new JLabel("0%");
+			        	percent = new JLabel("0%");
 			        	percent.setBounds(130, 10, 100, 30);
 			        	
 			        	JTextField attempts = new JTextField("0");
@@ -432,6 +445,7 @@ public class MainGUI {
 			        	    @Override
 			        	    public void itemStateChanged(ItemEvent e) {
 			        	        boolean isSelected = e.getStateChange() == ItemEvent.SELECTED;
+			        	        scroll.setVisible(false);
 			        	        if (isSelected && !contents.getBackground().equals(Color.decode("#cbffbf"))) {
 			        	            levelpanel.remove(contents);
 			        	            gridLayout.setRows(data.getLevelname().size());
@@ -442,9 +456,11 @@ public class MainGUI {
 			        	        }
 			        	        levelpanel.repaint();
 			        	        levelpanel.revalidate();
+			        	        scroll.setVisible(true);
 			        	    }
 			        	});
 
+			        	
   	
 			        	contents.add(levelname);
 			        	contents.add(rank);
@@ -457,14 +473,33 @@ public class MainGUI {
 			        	contents.add(lockind);
 			        	contents.add(percent);
 			        	levelpanel.add(contents);
+
 			        	
 			        }
+					
+					sortbox.addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							
+							if(sortbox.getSelectedIndex() == 1) {
+								//levelpanel.removeAll();
+								for(int k = 0; k < sort.getSort().size(); k++) {
+									//levelpanel.add();
+								}
+							}
+							
+						}
+						
+					});
 
 					scroll.setVisible(true);
 					elements.infopanel().setVisible(true);
 					progress.setVisible(false);
 					info.setVisible(false);
 					currentLevel.setVisible(false);
+					
+					
 				}
 	        });
 	        thread.start();
@@ -475,6 +510,22 @@ public class MainGUI {
 				public void actionPerformed(ActionEvent e) {
 					SettingsGui gui = new SettingsGui();
 					gui.showSettings();
+					 
+				}
+	        	
+	        });
+	        
+	        startgame.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					try {
+						Process process = Runtime.getRuntime().exec("cmd /c start steam://rungameid/322170");
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+							
 					
 				}
 	        	
@@ -484,16 +535,14 @@ public class MainGUI {
 	    elements.infopanel().add(level, SwingConstants.CENTER);
 	    elements.infopanel().add(separator);
 	    elements.infopanel().add(separator2);
-	    elements.infopanel().add(separator3);
 	    elements.infopanel().add(creator);
 	    elements.infopanel().add(verifier);
-	    elements.infopanel().add(records);
 	    elements.infopanel().add(victorcount);
 	    elements.infopanel().add(idshow);
 	    elements.infopanel().add(qualify);
-	    elements.infopanel().add(victor);
 	    elements.infopanel().add(showinfos);
 	    elements.infopanel().add(attemptslabel);
+	  //  elements.infopanel().add(startgame);
 	               
 	    main.add(search);
 		main.add(currentLevel);
@@ -503,6 +552,7 @@ public class MainGUI {
 		main.add(filtercompleted);
 		main.add(show);
 		main.add(settings);
+		main.add(sortbox);
 		main.add(elements.infopanel());
 		main.setVisible(true);
 	}
