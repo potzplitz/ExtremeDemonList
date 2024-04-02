@@ -121,7 +121,7 @@ public class Sqlite {
                 + "    attempts INTEGER NOT NULL,\n"
                 + "    completed BOOLEAN NOT NULL,\n"
                 + "    locked BOOLEAN NOT NULL,\n" // Neue Spalte
-                + "    personalBest STRING NOT NULL\n"
+                + "    personalBest STRING\n"
                 + ");";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -137,6 +137,10 @@ public class Sqlite {
         String sql = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         System.out.println("tablename: " + levelname);
+        
+        if(pb == null) {
+        	pb = "";
+        }
 
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -364,10 +368,16 @@ public class Sqlite {
             String dropOldTableQuery = "DROP TABLE IF EXISTS " + tablename;
             stmt.executeUpdate(dropOldTableQuery);
 
+            // Benenne die neue Tabelle um, um das "_new" zu entfernen
+            String renameTableQuery = "ALTER TABLE " + newTableName + " RENAME TO " + tablename;
+            stmt.executeUpdate(renameTableQuery);
+
             System.out.println("Daten wurden erfolgreich von der alten Tabelle in die neue Tabelle kopiert.");
+            System.out.println("Die alte Tabelle wurde gelöscht und die neue Tabelle umbenannt.");
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 }

@@ -82,7 +82,7 @@ public class MainGUI {
 		Sqlite data = new Sqlite("levels");
 		data.queryData("levels");
 		
-		sort.sort();
+		//sort.sort();
 		
 		gridLayout.setRows(data.getLevelname().size());
 		
