@@ -271,7 +271,7 @@ public class Sqlite {
                     pstmt.setInt(9, Integer.parseInt(percenttoqualifylocal.get(i)));
                     pstmt.setString(10, recordslocal.get(i));
                     pstmt.setInt(11, attemptsLocal.get(i));
-                    pstmt.setBoolean(12, false);
+                    pstmt.setBoolean(12, Boolean.parseBoolean(completedlocal.get(i)));
                     pstmt.setBoolean(13, lockedLocal.get(i)); // Insert value of locked column
                     pstmt.setString(14, pblocal.get(i));
                     pstmt.executeUpdate();
