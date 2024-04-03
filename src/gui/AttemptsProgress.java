@@ -17,7 +17,7 @@ public class AttemptsProgress {
 	 JTextArea area = new JTextArea();
 	JScrollPane scroll = new JScrollPane(area);
 	JFrame main = new JFrame("Updater");
-	JLabel zeit = new JLabel("Verstrichene Zeit: ");
+	JLabel zeit = new JLabel("Fortschritt des Einlesens: ");
 	
 	private float timer;
 	private float finishedtime;

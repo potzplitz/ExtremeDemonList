@@ -63,6 +63,7 @@ public class MainGUI {
 	public Button copyid = new Button("Level ID kopieren");
 	public Button showinfos = new Button("Mehr Infos anzeigen");
 	public Button startgame = new Button("Geometry Dash starten");
+	public Button showcalc = new Button("Abstand Berechnen");
 	public JButton settings = new JButton("⚙");
 	GridLayout gridLayout = new GridLayout(3, 1);
 	private String[] showing = {"Alle anzeigen", "Top 3", "Top 50", "Top 150", "Top 200"};
@@ -127,6 +128,8 @@ public class MainGUI {
 		settings.setBackground(Color.LIGHT_GRAY);
 		
 		showinfos.setBounds(12, 237, 160, 30);
+		
+		showcalc.setBounds(12, 283, 160, 30);
 		
 		startgame.setBounds(12, 560, 160, 30);
 		 
@@ -530,6 +533,16 @@ public class MainGUI {
 				}
 	        	
 	        });
+	        
+	        showcalc.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					DifferenceCaluclator calc = new DifferenceCaluclator();
+					calc.calculate();
+				}
+	        	
+	        });
 	    
 	    elements.infopanel().add(copyid);
 	    elements.infopanel().add(level, SwingConstants.CENTER);
@@ -542,6 +555,7 @@ public class MainGUI {
 	    elements.infopanel().add(qualify);
 	    elements.infopanel().add(showinfos);
 	    elements.infopanel().add(attemptslabel);
+	    elements.infopanel().add(showcalc);
 	  //  elements.infopanel().add(startgame);
 	               
 	    main.add(search);
