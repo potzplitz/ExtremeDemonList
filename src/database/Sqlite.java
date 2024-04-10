@@ -259,31 +259,53 @@ public class Sqlite {
             // Füge Daten in die neue Tabelle ein
             String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insert)) {
-                for (int i = 0; i < levelnamelocal.size(); i++) {
-                	
-                	
-                	
-                    pstmt.setInt(1, i + 1);
-                    pstmt.setString(2, levelnamelocal.get(i));
-                    
-                    if(data.allLevels().indexOf(rawLevelNameslocal.get(i)) != -1) {
-                		pstmt.setString(3, rawLevelNameslocal.get(data.allLevels().indexOf(rawLevelNameslocal.get(i))));
-                	}
-                    
-                    pstmt.setInt(4, Integer.parseInt(levelIDlocal.get(i)));
-                    pstmt.setString(5, authorlocal.get(i));
-                    pstmt.setString(6, creatorslocal.get(i));
-                    pstmt.setString(7, verifierlocal.get(i));
-                    pstmt.setString(8, verificationLinklocal.get(i));
-                    pstmt.setInt(9, Integer.parseInt(percenttoqualifylocal.get(i)));
-                    pstmt.setString(10, recordslocal.get(i));
-                    pstmt.setInt(11, attemptsLocal.get(i));
-                    pstmt.setBoolean(12, Boolean.parseBoolean(completedlocal.get(i)));
-                    pstmt.setBoolean(13, lockedLocal.get(i)); // Insert value of locked column
-                    pstmt.setString(14, pblocal.get(i));
-                    pstmt.executeUpdate();
-                }
+            	for (int i = 0; i < levelnamelocal.size(); i++) {
+            	    if (i < rawLevelNameslocal.size()) { // Überprüfen, ob der Index im Array rawLevelNameslocal gültig ist
+            	        String currentRawLevelName = rawLevelNameslocal.get(i);
+            	        if (data.allLevels().indexOf(currentRawLevelName) == -1) {
+            	            // Das Level wurde entfernt, also sollte auch der Eintrag in der lokalen Datenbank entfernt werden
+            	            removeEntry("levels", currentRawLevelName);
+            	        } else {
+            	            // Das Level existiert noch, füge es in die neue Tabelle ein
+            	            pstmt.setInt(1, i + 1);
+            	            pstmt.setString(2, levelnamelocal.get(i));
+            	            pstmt.setString(3, currentRawLevelName);
+            	            pstmt.setInt(4, Integer.parseInt(levelIDlocal.get(i)));
+            	            pstmt.setString(5, authorlocal.get(i));
+            	            pstmt.setString(6, creatorslocal.get(i));
+            	            pstmt.setString(7, verifierlocal.get(i));
+            	            pstmt.setString(8, verificationLinklocal.get(i));
+            	            pstmt.setInt(9, Integer.parseInt(percenttoqualifylocal.get(i)));
+            	            pstmt.setString(10, recordslocal.get(i));
+            	            pstmt.setInt(11, attemptsLocal.get(i));
+            	            pstmt.setBoolean(12, Boolean.parseBoolean(completedlocal.get(i)));
+            	            pstmt.setBoolean(13, lockedLocal.get(i)); // Insert value of locked column
+            	            pstmt.setString(14, pblocal.get(i));
+            	            pstmt.executeUpdate();
+            	        }
+            	    } else {
+            	        // Index ist außerhalb des gültigen Bereichs, es gibt kein entsprechendes Level in rawLevelNameslocal
+            	        // Das könnte bedeuten, dass das Level entfernt wurde, also sollte dieser Fall behandelt werden
+            	        // Hier könntest du entscheiden, was in diesem Fall passieren soll, z.B. einen Log-Eintrag erstellen
+            	        // oder den Code entsprechend anpassen
+            	    }
+            	}
+
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void removeEntry(String tablename, String rawLevelName) throws SQLException {
+        String sql = "DELETE FROM " + tablename + " WHERE levelNameRaw = ?";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.executeUpdate();
+
+            System.out.println("Entry with rawLevelName '" + rawLevelName + "' removed from " + tablename);
         } catch (SQLException e) {
             e.printStackTrace();
         }
