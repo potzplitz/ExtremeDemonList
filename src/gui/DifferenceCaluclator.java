@@ -65,7 +65,7 @@ public class DifferenceCaluclator {
 		lvl1.add(name1);
 		
 		JLabel rank1 = new JLabel();
-		rank1.setBounds(150, 10, 50, 30);
+		rank1.setBounds(130, 10, 50, 30);
 		rank1.setVisible(false);
 		lvl1.add(rank1);
 		
@@ -81,7 +81,7 @@ public class DifferenceCaluclator {
 		lvl2.add(name2);
 		
 		JLabel rank2 = new JLabel();
-		rank2.setBounds(150, 10, 50, 30);
+		rank2.setBounds(130, 10, 50, 30);
 		rank2.setVisible(false);
 		lvl2.add(rank2);
 		
@@ -157,7 +157,6 @@ public class DifferenceCaluclator {
 						results.repaint();
 						results.revalidate();
 					} else if(sql.getLevelname().get(index).toLowerCase().contains(search.getText())) {
-						System.out.println(search.getText());
 						results.add(contents);
 						results.repaint();
 						results.revalidate();
@@ -224,6 +223,10 @@ public class DifferenceCaluclator {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				search.setText("");
+				name1.setVisible(false);
+				rank1.setVisible(false);
+				rank2.setVisible(false);
+				name2.setVisible(false);
 				
 			}
 		});

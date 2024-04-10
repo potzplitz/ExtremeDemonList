@@ -260,9 +260,16 @@ public class Sqlite {
             String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insert)) {
                 for (int i = 0; i < levelnamelocal.size(); i++) {
+                	
+                	
+                	
                     pstmt.setInt(1, i + 1);
                     pstmt.setString(2, levelnamelocal.get(i));
-                    pstmt.setString(3, rawLevelNameslocal.get(data.allLevels().indexOf(rawLevelNameslocal.get(i))));
+                    
+                    if(data.allLevels().indexOf(rawLevelNameslocal.get(i)) != -1) {
+                		pstmt.setString(3, rawLevelNameslocal.get(data.allLevels().indexOf(rawLevelNameslocal.get(i))));
+                	}
+                    
                     pstmt.setInt(4, Integer.parseInt(levelIDlocal.get(i)));
                     pstmt.setString(5, authorlocal.get(i));
                     pstmt.setString(6, creatorslocal.get(i));
