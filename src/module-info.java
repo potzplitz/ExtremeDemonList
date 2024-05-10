@@ -10,4 +10,5 @@
 		requires java.sql;
 		requires java.xml;
 		requires org.apache.commons.codec;
+		requires github.api;
 	}

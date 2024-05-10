@@ -11,11 +11,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import data.FetchData;
+import gui.LoadingStatus;
 
 public class Sqlite {
 
     private static String url = "jdbc:sqlite:C:\\ExtremeDemonList\\database\\sqlite\\";
     private static String filename;
+    
+    private LoadingStatus status;
 
     private ArrayList<String> levelname = new ArrayList<String>();
     private ArrayList<String> levelID = new ArrayList<String>();
@@ -30,6 +33,7 @@ public class Sqlite {
     private ArrayList<Integer> attempts = new ArrayList<Integer>();
     private ArrayList<Boolean> locked = new ArrayList<Boolean>(); // New column
     private ArrayList<String> pbarr = new ArrayList<String>();
+    private ArrayList<String> levelLength = new ArrayList<String>();
 
     public ArrayList<String> getLevelname() {
         return levelname;
@@ -82,6 +86,10 @@ public class Sqlite {
     public ArrayList<String> getPbarr() {
         return pbarr;
     }
+    
+    public ArrayList<String> getLevelLength() {
+    	return levelLength;
+    }
 
     public Sqlite(String dbname) { // setzt variablen
         url = "jdbc:sqlite:C:\\ExtremeDemonList\\database\\sqlite\\";
@@ -121,7 +129,8 @@ public class Sqlite {
                 + "    attempts INTEGER NOT NULL,\n"
                 + "    completed BOOLEAN NOT NULL,\n"
                 + "    locked BOOLEAN NOT NULL,\n" // Neue Spalte
-                + "    personalBest STRING\n"
+                + "    personalBest STRING,\n"
+                + "    levelLength String\n"
                 + ");";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -133,8 +142,8 @@ public class Sqlite {
         }
     }
 
-    public void insertData(String tablename, Integer attempts, int placement, String levelname, String levelnameRaw, int levelid, String author, String creators, String verifier, String verificationLink, int percenttoqualify, String records, boolean completed, boolean locked, String pb) {
-        String sql = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void insertData(String tablename, Integer attempts, int placement, String levelname, String levelnameRaw, int levelid, String author, String creators, String verifier, String verificationLink, int percenttoqualify, String records, boolean completed, boolean locked, String pb, String levelLength) {
+        String sql = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest, levelLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         System.out.println("tablename: " + levelname);
         
@@ -158,6 +167,7 @@ public class Sqlite {
             pstmt.setBoolean(12, completed);
             pstmt.setBoolean(13, locked);
             pstmt.setString(14, pb);
+            pstmt.setString(15, levelLength);
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -188,6 +198,7 @@ public class Sqlite {
                 attempts.add(rs.getInt("attempts"));
                 locked.add(rs.getBoolean("locked")); // Get the value of the new column
                 pbarr.add(rs.getString("personalBest"));
+                levelLength.add(rs.getString("levelLength"));
 
             }
 
@@ -199,6 +210,11 @@ public class Sqlite {
 
     public void sortData(String tablename) throws SQLException {
     	FetchData data = new FetchData();
+    	
+status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
+        
+        status.initialize();
+    	status.changeState("Datenbank wird sortiert...");
 
         ArrayList<String> levelnamelocal = new ArrayList<String>();
         ArrayList<String> levelIDlocal = new ArrayList<String>();
@@ -213,6 +229,7 @@ public class Sqlite {
         ArrayList<Integer> attemptsLocal = new ArrayList<Integer>();
         ArrayList<Boolean> lockedLocal = new ArrayList<Boolean>();
         ArrayList<String> pblocal = new ArrayList<String>();
+        ArrayList<String> levelLengthlocal = new ArrayList<String>();
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -229,11 +246,15 @@ public class Sqlite {
                 maxPlacement = maxPlacementResult.getInt("maxPlacement");
             }
 
+            int index = 0;
+            
             // Durchlaufen Sie die Platzierungen und holen Sie die Daten entsprechend
             for (int i = 1; i <= maxPlacement; i++) {
                 String sql = "SELECT * FROM " + tablename + " WHERE placement = " + i;
                 ResultSet rs = stmt.executeQuery(sql);
                 while (rs.next()) {
+                	index++;
+                	status.update(rs.getString("levelname"), index);
                     levelnamelocal.add(rs.getString("levelname"));
                     levelIDlocal.add(rs.getInt("levelID") + "");
                     authorlocal.add(rs.getString("author"));
@@ -247,6 +268,7 @@ public class Sqlite {
                     attemptsLocal.add(rs.getInt("attempts"));
                     lockedLocal.add(rs.getBoolean("locked"));
                     pblocal.add(rs.getString("personalBest"));
+                    levelLengthlocal.add(rs.getString("levelLength"));
                 }
             }
 
@@ -256,10 +278,13 @@ public class Sqlite {
             // Erstelle eine neue Tabelle mit dem ursprünglichen Namen
             createNewTable(tablename);
 
+            status.changeState("Daten werden in neue Tabelle migriert...");
+            
             // Füge Daten in die neue Tabelle ein
-            String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest, levelLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insert)) {
             	for (int i = 0; i < levelnamelocal.size(); i++) {
+            		status.update(levelnamelocal.get(i), i);
             	    if (i < rawLevelNameslocal.size()) { // Überprüfen, ob der Index im Array rawLevelNameslocal gültig ist
             	        String currentRawLevelName = rawLevelNameslocal.get(i);
             	        if (data.allLevels().indexOf(currentRawLevelName) == -1) {
@@ -281,6 +306,7 @@ public class Sqlite {
             	            pstmt.setBoolean(12, Boolean.parseBoolean(completedlocal.get(i)));
             	            pstmt.setBoolean(13, lockedLocal.get(i)); // Insert value of locked column
             	            pstmt.setString(14, pblocal.get(i));
+            	            pstmt.setString(15, levelLengthlocal.get(i));
             	            pstmt.executeUpdate();
             	        }
             	    } else {
@@ -295,6 +321,7 @@ public class Sqlite {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        status.dispose();
     }
     
     public void removeEntry(String tablename, String rawLevelName) throws SQLException {
@@ -311,16 +338,17 @@ public class Sqlite {
         }
     }
 
-    public void modifyData(String levelname, boolean completedStatus, int attempts, boolean lock, String percent) {
-        String sql = "UPDATE levels SET completed = ?, attempts = ?, locked = ?, personalBest = ? WHERE levelname = ?";
+    public void modifyData(String levelname, boolean completedStatus, int attempts, boolean lock, String percent, String levelLength) {
+        String sql = "UPDATE levels SET completed = ?, attempts = ?, locked = ?, personalBest = ?, levelLength = ? WHERE levelname = ?";
 
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setBoolean(1, completedStatus);
-            pstmt.setInt(2, attempts);
-            pstmt.setBoolean(3, lock); // Korrigierte Reihenfolge
-            pstmt.setString(4, percent);
-            pstmt.setString(5, levelname); // Korrigierte Reihenfolge
+        	pstmt.setBoolean(1, completedStatus);
+        	pstmt.setInt(2, attempts);
+        	pstmt.setBoolean(3, lock); // Korrigierte Reihenfolge
+        	pstmt.setString(4, percent);
+        	pstmt.setString(5, levelLength);
+        	pstmt.setString(6, levelname); // Korrigierte Reihenfolge
             
            
 
@@ -336,7 +364,7 @@ public class Sqlite {
     }
 
     public void checkColumns(String tablename) {
-        String[] spalten = {"placement", "levelname", "levelnameRaw", "levelID", "author", "creators", "verifier", "verificationLink", "percentToQualify", "records", "attempts", "completed", "locked", "personalBest"};
+        String[] spalten = {"placement", "levelname", "levelnameRaw", "levelID", "author", "creators", "verifier", "verificationLink", "percentToQualify", "records", "attempts", "completed", "locked", "personalBest", "levelLength"};
 
         // Datenbankverbindung
         try (Connection connection = DriverManager.getConnection(url)) {

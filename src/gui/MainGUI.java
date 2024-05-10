@@ -280,7 +280,7 @@ public class MainGUI {
 							public void actionPerformed(ActionEvent e) {
 								
 								if(!(comp[index] == Boolean.parseBoolean(data.getCompleted().get(index))) || !(attempts.getText().equals(data.getAttempts().get(index) + "")) || !(data.getLocked().get(index) == lockbool[index])) {
-									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index], data.getPbarr().get(index));
+									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index], data.getPbarr().get(index), data.getLevelLength().get(index));
 								}
 								
 								

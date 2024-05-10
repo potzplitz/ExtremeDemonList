@@ -15,6 +15,7 @@ public class ReadAttemptsFromXML {
     
     public Map<String, String> attempts = new HashMap<String, String>();
     public Map<String, String> newbestMap = new HashMap<>();
+    public Map<String, String> lengthMap = new HashMap<>();
     
     public void readAttempts() {
         try {
@@ -46,6 +47,7 @@ public class ReadAttemptsFromXML {
                     NodeList dChildren = dElement.getChildNodes();
                     String attemptsValue = null;
                     String percentValue = null;
+                    String lengthValue = null;
                     
                     for (int j = 0; j < dChildren.getLength(); j++) {
                         if (dChildren.item(j).getNodeName().equals("k")) {
@@ -54,21 +56,30 @@ public class ReadAttemptsFromXML {
                             if (kChild.getTextContent().equals("k18")) {
                                 attemptsValue = dChildren.item(j + 1).getTextContent();
                             }
-                            
+                             	
                             if (kChild.getTextContent().equals("k19")) {
                                 percentValue = dChildren.item(j + 1).getTextContent();
                             }
+                            
+                            if(kChild.getTextContent().equals("k23")) {
+                            	lengthValue = dChildren.item(j + 1).getTextContent();
+                            }
                         }
+                    }
+                    
+                    
+                    if(lengthValue != null) {
+                    	lengthMap.put(currentLevelID, lengthValue);
                     }
                     
                     if (attemptsValue != null && percentValue != null) {
                         tempAttempts.put(currentLevelID, attemptsValue ); // + "," + percentValue
                         newbestMap.put(currentLevelID, percentValue);
+                       
                     }
                 }
             }
             
-            // Füge die Daten aus der temporären Map in die attempts-Map ein
             attempts.putAll(tempAttempts);
         } catch (Exception e) {
             e.printStackTrace();

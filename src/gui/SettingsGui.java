@@ -87,6 +87,8 @@ public class SettingsGui {
 			
 		});
 		
+		Button lengthReq = new Button("Länge der Level abfragen");
+		
 		Button delete = new Button("Datenbank löschen");
 		delete.setBounds(150, 206, 150, 30);
 		

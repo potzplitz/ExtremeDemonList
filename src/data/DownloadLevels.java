@@ -12,6 +12,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import api.GetApiData;
 import gui.MainGUI;
 import settingsfunctions.LoadSettings;
 import settingsfunctions.MigrateData;
@@ -96,6 +97,10 @@ public class DownloadLevels {
             		MainGUI gui = new MainGUI();
             		MigrateData migrate = new MigrateData();
             		migrate.migrateData();
+            		
+            		RequestLevelLength req = new RequestLevelLength();
+            		req.request();
+            		
             		try {
 						gui.build();
 					} catch (IOException e) {

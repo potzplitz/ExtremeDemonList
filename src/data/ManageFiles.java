@@ -38,6 +38,5 @@ public class ManageFiles {
 				MainGUI gui = new MainGUI();
 				gui.build();
 			}
-
 		}
-}
+	}

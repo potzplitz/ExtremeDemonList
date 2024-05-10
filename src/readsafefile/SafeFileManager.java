@@ -8,6 +8,8 @@ import gui.AttemptsProgress;
 
 public class SafeFileManager {
 	
+	private String[] lengthArr = {"Tiny", "Short", "Medium", "Long", "XL", "Platformer", "N/A"};
+	
 	public void DecryptSafeFile() throws IOException {
 		DecryptXOR.decryptAndWriteFiles();
 	}
@@ -39,6 +41,12 @@ public class SafeFileManager {
 		for(int i = 0; i < database.getLevelID().size(); i++) {
 			attempts = read.attempts.get(database.getLevelID().get(i));
 			percent = read.newbestMap.get(database.getLevelID().get(i));
+			
+			if(read.lengthMap.get(database.getLevelID().get(i)) != null) {
+				System.out.println(lengthArr[Integer.parseInt(read.lengthMap.get(database.getLevelID().get(i)))]);
+			}
+			
+			
 			if(attempts == null) {
 				attempts = 0 + "";
 			}
@@ -47,7 +55,7 @@ public class SafeFileManager {
 			}
 			prog.update(database.getLevelname().get(i), Integer.parseInt(attempts), Integer.parseInt(percent), i);
 			if(!database.getLocked().get(i)) {
-				database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), Integer.parseInt(attempts), database.getLocked().get(i), percent);
+				database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), Integer.parseInt(attempts), database.getLocked().get(i), percent, database.getLevelLength().get(i));
 				}
 			}
 		prog.close();

@@ -25,5 +25,23 @@ public class GetApiData {
 		
 		return songID;
 	}
+	
+	private static int lock = 0;
+	 GDClient client = null;
+	 GDLevel level = null;
+	
+	public String getLevelLength(int id) {
+		if(lock == 0) {
+			client = GDClient.create();	
+		}
+		lock = 1;
+		
+		level = client.findLevelById(id).block();
+		
+		String length = level.length() + "";
+		
+		return length;
+		
+	}
 
 }
