@@ -214,7 +214,7 @@ public class Sqlite {
 status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
         
         status.initialize();
-    	status.changeState("Datenbank wird sortiert...");
+    	
 
         ArrayList<String> levelnamelocal = new ArrayList<String>();
         ArrayList<String> levelIDlocal = new ArrayList<String>();
@@ -248,6 +248,8 @@ status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
 
             int index = 0;
             
+            status.changeState("Datenbank wird sortiert...", maxPlacement);
+            
             // Durchlaufen Sie die Platzierungen und holen Sie die Daten entsprechend
             for (int i = 1; i <= maxPlacement; i++) {
                 String sql = "SELECT * FROM " + tablename + " WHERE placement = " + i;
@@ -278,7 +280,7 @@ status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
             // Erstelle eine neue Tabelle mit dem ursprünglichen Namen
             createNewTable(tablename);
 
-            status.changeState("Daten werden in neue Tabelle migriert...");
+            status.changeState("Daten werden in neue Tabelle migriert...", levelnamelocal.size());
             
             // Füge Daten in die neue Tabelle ein
             String insert = "INSERT INTO " + tablename + " (placement, levelname, levelnameRaw, levelID, author, creators, verifier, verificationLink, percentToQualify, records, attempts, completed, locked, personalBest, levelLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

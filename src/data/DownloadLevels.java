@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 
 import api.GetApiData;
 import gui.MainGUI;
+import readsafefile.SafeFileManager;
 import settingsfunctions.LoadSettings;
 import settingsfunctions.MigrateData;
 
@@ -97,9 +98,6 @@ public class DownloadLevels {
             		MainGUI gui = new MainGUI();
             		MigrateData migrate = new MigrateData();
             		migrate.migrateData();
-            		
-            		RequestLevelLength req = new RequestLevelLength();
-            		req.request();
             		
             		try {
 						gui.build();

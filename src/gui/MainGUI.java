@@ -36,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import api.GetApiData;
 import data.SortData;
 import database.Sqlite;
 
@@ -59,6 +60,7 @@ public class MainGUI {
 	public JLabel idshow = new JLabel("ID");
 	public JLabel qualify = new JLabel("Qualifikation");
 	public JLabel attemptslabel = new JLabel("Attempts");
+	public JLabel lengthLabel = new JLabel("Länge");
 	public JCheckBox filtercompleted = new JCheckBox("Nach geschafft filtern");
 	public Button copyid = new Button("Level ID kopieren");
 	public Button showinfos = new Button("Mehr Infos anzeigen");
@@ -82,6 +84,8 @@ public class MainGUI {
 
 		Sqlite data = new Sqlite("levels");
 		data.queryData("levels");
+		
+		GetApiData api = new GetApiData();
 		
 		//sort.sort();
 		
@@ -117,19 +121,21 @@ public class MainGUI {
 		
 		idshow.setBounds(10, 110, 164, 30);
 		
-		copyid.setBounds(10, 190, 164, 30);
+		copyid.setBounds(10, 210, 164, 30);
 		
 		qualify.setBounds(10, 130, 164, 30);
 		
 		attemptslabel.setBounds(10, 150, 164, 30);
 		
+		lengthLabel.setBounds(10, 170, 164, 30);
+		
 		settings.setBounds(1, 1, 60, 60);
 		settings.setFont(settings.getFont().deriveFont(30f));
 		settings.setBackground(Color.LIGHT_GRAY);
 		
-		showinfos.setBounds(12, 237, 160, 30);
+		showinfos.setBounds(12, 257, 160, 30);
 		
-		showcalc.setBounds(12, 283, 160, 30);
+		showcalc.setBounds(12, 303, 160, 30);
 		
 		startgame.setBounds(12, 560, 160, 30);
 		 
@@ -143,7 +149,7 @@ public class MainGUI {
 	     elements.infopanel().setVisible(false);
 	     
 	     separator.setBounds(0, 30, 300, 30);
-	     separator2.setBounds(0 ,160, 400, 30);
+	     separator2.setBounds(0 ,180, 400, 30);
 	     
 	     creator.setBounds(10, 50, 164, 30);
 	     
@@ -310,7 +316,7 @@ public class MainGUI {
 			        	
 			        	contents.addMouseListener(new MouseListener() {
 							@Override
-							public void mouseClicked(MouseEvent e) {	
+							public void mouseClicked(MouseEvent e) {
 								showinfos.addActionListener(new ActionListener() {
 								    @Override
 								    public void actionPerformed(ActionEvent e) {
@@ -328,14 +334,30 @@ public class MainGUI {
 								attemptslabel.setText("Attempts: " + data.getAttempts().get(index));
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
+								String levellength = data.getLevelLength().get(index);
+								lengthLabel.setText("Länge: lädt...");
+								
+								if(data.getLevelLength().get(index).equals("N/A")) {
+									if(req == 0) {
+									levellength = api.getLevelLength(Integer.parseInt(data.getLevelID().get(index)));
+									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index], data.getPbarr().get(index), levellength);
+									System.out.println("request");
+									}
+								}
+								
+								lengthLabel.setText("Länge: " + levellength);
+								
 								copyid.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										StringSelection stringSelection = new StringSelection(data.getLevelID().get(index));
 										Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-										clipboard.setContents(stringSelection, null);				
+										clipboard.setContents(stringSelection, null);		
+										
 									}
-					        	});		
+									
+					        	});	
+								
 							}
 							@Override
 							public void mousePressed(MouseEvent e) {						
@@ -556,6 +578,7 @@ public class MainGUI {
 	    elements.infopanel().add(showinfos);
 	    elements.infopanel().add(attemptslabel);
 	    elements.infopanel().add(showcalc);
+	    elements.infopanel().add(lengthLabel);
 	  //  elements.infopanel().add(startgame);
 	               
 	    main.add(search);

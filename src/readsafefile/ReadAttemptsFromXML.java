@@ -17,6 +17,11 @@ public class ReadAttemptsFromXML {
     public Map<String, String> newbestMap = new HashMap<>();
     public Map<String, String> lengthMap = new HashMap<>();
     
+    public Map<String, String> getLengthMap() {
+    	System.out.println("size getLengthMap in function: " + lengthMap.size());
+    	return lengthMap;
+    }
+    
     public void readAttempts() {
         try {
             File xmlFile = new File("C:\\ExtremeDemonList\\userdata\\CCGameManager.dat.xml");
@@ -66,20 +71,15 @@ public class ReadAttemptsFromXML {
                             }
                         }
                     }
-                    
-                    
-                    if(lengthValue != null) {
-                    	lengthMap.put(currentLevelID, lengthValue);
-                    }
-                    
-                    if (attemptsValue != null && percentValue != null) {
+              
+                    if (attemptsValue != null && percentValue != null && lengthValue != null) {
                         tempAttempts.put(currentLevelID, attemptsValue ); // + "," + percentValue
                         newbestMap.put(currentLevelID, percentValue);
-                       
+                        lengthMap.put(currentLevelID, lengthValue);
                     }
                 }
             }
-            
+            System.out.println("lengthmap size: " + lengthMap.size());
             attempts.putAll(tempAttempts);
         } catch (Exception e) {
             e.printStackTrace();

@@ -70,8 +70,8 @@ public class LoadingStatus {
         main.dispose();
     }
     
-    public void changeState(String state) {
-        bar.setMaximum(data.allLevels().size());
+    public void changeState(String state, int arrsize) {
+        bar.setMaximum(arrsize);
         bar.setValue(0);
         info.setText(state);
         area.setText("");
