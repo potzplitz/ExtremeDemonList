@@ -338,11 +338,9 @@ public class MainGUI {
 								lengthLabel.setText("Länge: lädt...");
 								
 								if(data.getLevelLength().get(index).equals("N/A")) {
-									if(req == 0) {
 									levellength = api.getLevelLength(Integer.parseInt(data.getLevelID().get(index)));
 									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index], data.getPbarr().get(index), levellength);
 									System.out.println("request");
-									}
 								}
 								
 								lengthLabel.setText("Länge: " + levellength);
