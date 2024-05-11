@@ -19,7 +19,7 @@ public class LoadingStatus {
     private JLabel info = new JLabel("Updateroutine wird durchgeführt...");
     private FetchData data = new FetchData();
     
-    private LoadingStatus() {
+    public LoadingStatus() {
         initialize();
     }
     
@@ -34,7 +34,7 @@ public class LoadingStatus {
         area.setEditable(false);
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
-        area.setCaretPosition(area.getDocument().getLength());
+        
         
         JScrollPane scroll = new JScrollPane(area);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -63,6 +63,7 @@ public class LoadingStatus {
     public void update(String level, int barValue) {
         area.append(level + "\n");
         bar.setValue(barValue + 1);
+        area.setCaretPosition(area.getDocument().getLength());
     }
     
     public void dispose() {
