@@ -40,7 +40,13 @@ public class SafeFileManager {
 		
 		lengthComp.putAll(read.lengthMap);
 		
-		
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+			
 		
 		String attempts;
 		String percent;
@@ -66,6 +72,10 @@ public class SafeFileManager {
 				}
 			}
 		prog.close();
+			}
+			
+		});
+		thread.start();
 	}
 
 }

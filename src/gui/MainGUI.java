@@ -334,8 +334,10 @@ public class MainGUI {
 								attemptslabel.setText("Attempts: " + data.getAttempts().get(index));
 								level.setVerticalAlignment(SwingConstants.CENTER);
 								
-								String levellength = data.getLevelLength().get(index);
 								lengthLabel.setText("Länge: lädt...");
+								
+								String levellength = data.getLevelLength().get(index);
+								
 								
 								if(data.getLevelLength().get(index).equals("N/A")) {
 									levellength = api.getLevelLength(Integer.parseInt(data.getLevelID().get(index)));
