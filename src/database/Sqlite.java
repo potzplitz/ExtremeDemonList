@@ -368,21 +368,17 @@ status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
     public void checkColumns(String tablename) {
         String[] spalten = {"placement", "levelname", "levelnameRaw", "levelID", "author", "creators", "verifier", "verificationLink", "percentToQualify", "records", "attempts", "completed", "locked", "personalBest", "levelLength"};
 
-        // Datenbankverbindung
         try (Connection connection = DriverManager.getConnection(url)) {
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet resultSet;
 
             int missing = 0;
 
-            // Schleife über die Spalten
             for (String spalte : spalten) {
-                // Abfrage der Spalteninformationen
                 resultSet = metaData.getColumns(null, null, tablename, spalte);
 
                 if (!resultSet.next()) {
                     System.out.println("Spalte " + spalte + " existiert nicht. Eine neue Spalte wird erstellt.");
-                    // Eine neue Spalte erstellen
                     createNewColumn(tablename, spalte);
                     missing++;
                 }

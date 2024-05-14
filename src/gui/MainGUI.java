@@ -339,7 +339,7 @@ public class MainGUI {
 								String levellength = data.getLevelLength().get(index);
 								
 								
-								if(data.getLevelLength().get(index).equals("N/A")) {
+								if(data.getLevelLength().get(index).equals("N/A") || data.getLevelID().get(index) == null) {
 									levellength = api.getLevelLength(Integer.parseInt(data.getLevelID().get(index)));
 									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index], data.getPbarr().get(index), levellength);
 									System.out.println("request");
@@ -399,7 +399,6 @@ public class MainGUI {
 								if(show.getSelectedIndex() == 1) {
 					        		if(!(Integer.parseInt(rank.getName()) >= 0 && Integer.parseInt(rank.getName()) <= 2)) {
 					        			levelpanel.remove(contents);
-					        			
 					        			levelpanel.repaint();
 					        			levelpanel.revalidate();
 					        		}

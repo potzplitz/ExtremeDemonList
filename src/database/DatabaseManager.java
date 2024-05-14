@@ -29,7 +29,7 @@ public class DatabaseManager {
     public void migrateData() {
         Sqlite database = new Sqlite("levels");
         FetchData fetch = new FetchData();
-        status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
+        status = LoadingStatus.getInstance();
         
         status.initialize();
         

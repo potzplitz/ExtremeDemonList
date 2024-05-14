@@ -22,6 +22,10 @@ public class SafeFileManager {
 	}
 	
 	public void ReadIndexAttempts() throws IOException {
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() { 
 		
 		read.readAttempts();
 		
@@ -39,14 +43,6 @@ public class SafeFileManager {
 		System.out.println("size lengthMap: " + read.getLengthMap().size());
 		
 		lengthComp.putAll(read.lengthMap);
-		
-		Thread thread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				
-			
 		
 		String attempts;
 		String percent;
@@ -69,7 +65,11 @@ public class SafeFileManager {
 			prog.update(database.getLevelname().get(i), Integer.parseInt(attempts), Integer.parseInt(percent), i);
 			if(!database.getLocked().get(i)) {
 				database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), Integer.parseInt(attempts), database.getLocked().get(i), percent, lengthArr[Integer.parseInt(length)]);
+				} else {
+				database.modifyData(database.getLevelname().get(i), Boolean.parseBoolean(database.getCompleted().get(i)), database.getAttempts().get(i), database.getLocked().get(i), database.getRecords().get(i), lengthArr[Integer.parseInt(length)]);
+
 				}
+			
 			}
 		prog.close();
 			}
