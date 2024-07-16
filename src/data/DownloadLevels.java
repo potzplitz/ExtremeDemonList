@@ -91,8 +91,6 @@ public class DownloadLevels {
         	        }
         			area.append(" >> ERFOLGREICH \n");
         		}
-
-            	JOptionPane.showMessageDialog(null, "Alle " + ManageFiles.getMissinglevels().size() + " Level wurden erfolgreich heruntergeladen.", "Download abgeschlossen", JOptionPane.INFORMATION_MESSAGE);
             	main.dispose();
 
             		MainGUI gui = new MainGUI();

@@ -23,6 +23,13 @@ public class LoadingStatus {
         initialize();
     }
     
+    public static synchronized LoadingStatus getInstance() {
+        if (instance == null) {
+            instance = new LoadingStatus();
+        }
+        return instance;
+    }
+    
     public void initialize() {
         main.setSize(400, 300);
         main.setLayout(null); 
@@ -51,13 +58,6 @@ public class LoadingStatus {
         main.add(scroll);
         main.add(bar);
         main.setVisible(true);
-    }
-    
-    public static synchronized LoadingStatus getInstance() {
-        if (instance == null) {
-            instance = new LoadingStatus();
-        }
-        return instance;
     }
     
     public void update(String level, int barValue) {

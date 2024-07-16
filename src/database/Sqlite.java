@@ -129,8 +129,8 @@ public class Sqlite {
                 + "    attempts INTEGER NOT NULL,\n"
                 + "    completed BOOLEAN NOT NULL,\n"
                 + "    locked BOOLEAN NOT NULL,\n" // Neue Spalte
-                + "    personalBest STRING,\n"
-                + "    levelLength String\n"
+                + "    personalBest STRING NOT NULL,\n"
+                + "    levelLength String NOT NULL\n"
                 + ");";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -394,7 +394,7 @@ status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
     }
 
     private void createNewColumn(String tablename, String columnName) {
-        String sql = "ALTER TABLE " + tablename + " ADD COLUMN " + columnName + " TEXT";
+        String sql = "ALTER TABLE " + tablename + " ADD COLUMN " + columnName + " TEXT NOT NULL";
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(sql);
@@ -402,6 +402,7 @@ status = LoadingStatus.getInstance(); // Holen der Singleton-Instanz
             e.printStackTrace();
         }
     }
+
 
     public void moveDataToNewDatabase(String tablename) {
         // Neuen Tabellennamen für die Kopie

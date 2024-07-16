@@ -3,7 +3,6 @@ package gui;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -18,10 +17,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -338,8 +333,10 @@ public class MainGUI {
 								
 								String levellength = data.getLevelLength().get(index);
 								
+								System.out.println("test:" + data.getLevelLength().get(index) + ".");
 								
-								if(data.getLevelLength().get(index).equals("N/A") || data.getLevelID().get(index) == null) {
+								
+								if(data.getLevelLength().get(index).equals("N/A") || data.getLevelLength().get(index) == null) {
 									levellength = api.getLevelLength(Integer.parseInt(data.getLevelID().get(index)));
 									data.modifyData(data.getLevelname().get(index), comp[index], Integer.parseInt(attempts.getText()), lockbool[index], data.getPbarr().get(index), levellength);
 									System.out.println("request");
