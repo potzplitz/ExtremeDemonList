@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 
-import database.DatabaseManager;
-
 public class GuiData {
 	
 	private ArrayList<String> localLevels = new ArrayList<String>();
@@ -66,9 +64,6 @@ public class GuiData {
 	}
 	
 	public void IndexData(ArrayList<String> migrate) throws IOException {
-		DatabaseManager mgr = new DatabaseManager();
-		
-		
 		File filelength = new File("C:\\ExtremeDemonList\\levels");
 		File[] filelengthindex = filelength.listFiles();
 		

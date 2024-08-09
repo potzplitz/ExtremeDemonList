@@ -7,14 +7,11 @@ import java.net.URL;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import api.GetApiData;
 import gui.MainGUI;
-import readsafefile.SafeFileManager;
 import settingsfunctions.LoadSettings;
 import settingsfunctions.MigrateData;
 

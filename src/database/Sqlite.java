@@ -176,15 +176,17 @@ public class Sqlite {
     }
 
     public void queryData(String tablename) {
+    	
+    	FetchData fetch = new FetchData();
+    	
+    	for(int i = 0; i < fetch.allLevels().size(); i++) {
 
-        String sql = "SELECT * FROM " + tablename;
+    		String sql = "SELECT * FROM " + tablename + " WHERE levelNameRaw = '" + fetch.allLevels().get(i) + "'";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            // loop through the result set
-            while (rs.next()) {
                 levelname.add(rs.getString("levelname"));
                 levelID.add(rs.getInt("levelID") + "");
                 author.add(rs.getString("author"));
@@ -200,13 +202,13 @@ public class Sqlite {
                 pbarr.add(rs.getString("personalBest"));
                 levelLength.add(rs.getString("levelLength"));
 
-            }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
+
+}
 
     public void sortData(String tablename) throws SQLException {
     	FetchData data = new FetchData();
