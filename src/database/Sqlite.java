@@ -176,39 +176,41 @@ public class Sqlite {
     }
 
     public void queryData(String tablename) {
-    	
-    	FetchData fetch = new FetchData();
-    	
-    	for(int i = 0; i < fetch.allLevels().size(); i++) {
+        FetchData fetch = new FetchData();
 
-    		String sql = "SELECT * FROM " + tablename + " WHERE levelNameRaw = '" + fetch.allLevels().get(i) + "'";
+        String sql = "SELECT levelname, levelID, author, creators, verifier, verificationLink, " +
+                     "percentToQualify, completed, records, levelNameRaw, attempts, locked, " +
+                     "personalBest, levelLength FROM " + tablename + " WHERE levelNameRaw = ?";
 
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                levelname.add(rs.getString("levelname"));
-                levelID.add(rs.getInt("levelID") + "");
-                author.add(rs.getString("author"));
-                creators.add(rs.getString("creators"));
-                verifier.add(rs.getString("verifier"));
-                verificationLink.add(rs.getString("verificationLink"));
-                percenttoqualify.add(rs.getInt("percentToQualify") + "");
-                completed.add(rs.getBoolean("completed") + "");
-                records.add(rs.getString("records"));
-                rawLevelNames.add(rs.getString("levelNameRaw"));
-                attempts.add(rs.getInt("attempts"));
-                locked.add(rs.getBoolean("locked")); // Get the value of the new column
-                pbarr.add(rs.getString("personalBest"));
-                levelLength.add(rs.getString("levelLength"));
+            for (int i = 0; i < fetch.allLevels().size(); i++) {
+                pstmt.setString(1, fetch.allLevels().get(i));
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {  // Sicherstellen, dass alle Zeilen verarbeitet werden
+                        levelname.add(rs.getString("levelname"));
+                        levelID.add(rs.getInt("levelID") + "");
+                        author.add(rs.getString("author"));
+                        creators.add(rs.getString("creators"));
+                        verifier.add(rs.getString("verifier"));
+                        verificationLink.add(rs.getString("verificationLink"));
+                        percenttoqualify.add(rs.getInt("percentToQualify") + "");
+                        completed.add(rs.getBoolean("completed") + "");
+                        records.add(rs.getString("records"));
+                        rawLevelNames.add(rs.getString("levelNameRaw"));
+                        attempts.add(rs.getInt("attempts"));
+                        locked.add(rs.getBoolean("locked"));
+                        pbarr.add(rs.getString("personalBest"));
+                        levelLength.add(rs.getString("levelLength"));
+                    }
+                }
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
-
-}
 
     public void sortData(String tablename) throws SQLException {
     	FetchData data = new FetchData();
