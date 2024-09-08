@@ -3,11 +3,14 @@ package main;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
+import javax.swing.JOptionPane;
+
 import api.GetApiData;
 import data.FetchData;
 import data.ManageFiles;
 import database.DatabaseManager;
 import database.Sqlite;
+import errorhandler.ErrorHandler;
 import filestructure.CreateFileStructure;
 import gui.LoadMenu;
 import preload.PreChecks;
@@ -16,6 +19,16 @@ import settingsfunctions.LoadSettings;
 public class Main {
 	
 	public static void main(String[] args) throws IOException, DataFormatException { 
+		
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                ErrorHandler error = new ErrorHandler();
+                error.newError(e);
+            }
+        });
+		
+		try {
 
 		LoadMenu load = new LoadMenu();
 		load.onLoad();
@@ -54,6 +67,10 @@ public class Main {
 
 		load.updateBar("Ladevorgang abgeschlossen");
 		load.close();
+		
+		} catch (Exception e) {
+			System.out.println("fehler");
+		}
 	}
 
 }

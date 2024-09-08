@@ -10,4 +10,5 @@
 		requires java.xml;
 		requires org.apache.commons.codec;
 		requires github.api;
+		requires java.mail;
 	}
