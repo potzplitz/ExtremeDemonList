@@ -16,7 +16,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class DecryptXOR {
 
-	private static final String[] SAVES = {"CCGameManager.dat"};
+    private static final String[] SAVES = {"CCGameManager.dat"};
     private static final int XOR_KEY = 11;
 
     private static byte[] xor(byte[] data, int key) {
@@ -42,6 +42,8 @@ public class DecryptXOR {
         bos.close();
         return bos.toByteArray();
     }
+
+	System.out.println("hi");
 
     public static void decryptAndWriteFiles() throws IOException {
         String appDataPath = System.getenv("LOCALAPPDATA") + "\\GeometryDash\\";
