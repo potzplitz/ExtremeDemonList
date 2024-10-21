@@ -43,8 +43,6 @@ public class DecryptXOR {
         return bos.toByteArray();
     }
 
-	System.out.println("hi");
-
     public static void decryptAndWriteFiles() throws IOException {
         String appDataPath = System.getenv("LOCALAPPDATA") + "\\GeometryDash\\";
         for (String save : SAVES) {
